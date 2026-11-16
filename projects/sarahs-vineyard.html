@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sarah's Vineyard Redesign Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: dusk on the hill. One evening palette, a drawn vineyard under the moon,
+   and the wine list as the main thing you do on the page. */
+:root {
+  --bg: #1d1320;
+  --surface: #2a1c2e;
+  --ink: #f4e9da;
+  --muted: #bfa9b2;
+  --line: #45304a;
+  --amber: #f0a441;
+  --display: "Cormorant Garamond", Georgia, serif;
+  --body: "Karla", "Segoe UI", Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+.concept { background: var(--amber); color: #1d1320; font: 500 14px var(--body); text-align: center; padding: 7px 14px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 clamp(18px, 5vw, 48px); }
+header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 18px; padding-bottom: 6px; }
+.logo { font: 700 28px var(--display); }
+.back { font-size: 14px; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; }
+.back:hover { border-color: var(--ink); }
+.hero { position: relative; }
+.scene { display: block; width: 100%; height: auto; }
+.hero .copy { padding-top: 10px; padding-bottom: 30px; }
+h1 { margin: 0; font: 600 clamp(42px, 7vw, 84px)/0.98 var(--display); letter-spacing: -0.01em; max-width: 16ch; text-wrap: balance; }
+.hero p { max-width: 50ch; color: var(--muted); margin: 16px 0 0; }
+.status { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; font-size: 15px; }
+.status i { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
+.status.open i { background: #7fd08a; box-shadow: 0 0 0 4px rgba(127, 208, 138, 0.2); }
+section { padding-top: clamp(28px, 5vw, 56px); padding-bottom: clamp(28px, 5vw, 56px); }
+h2 { margin: 0 0 6px; font: 600 clamp(34px, 5vw, 54px)/1 var(--display); }
+.lede { margin: 0 0 20px; color: var(--muted); max-width: 56ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.chips button { font: 500 14px var(--body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 7px 15px; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--amber); color: #1d1320; border-color: var(--amber); }
+.wines { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 14px; }
+.wine { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 8px; border-top: 4px solid var(--sw); }
+.wine h3 { margin: 0; font: 700 27px/1.05 var(--display); }
+.wine .style { font-size: 14px; color: var(--amber); }
+.wine p { margin: 0; font-size: 15px; color: var(--muted); }
+.gauge { margin-top: auto; padding-top: 8px; }
+.gauge .track { position: relative; height: 4px; background: var(--line); border-radius: 2px; }
+.gauge .dot { position: absolute; top: -4px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--amber); }
+.gauge .ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.price { font: 500 15px var(--body); font-variant-numeric: tabular-nums; }
+.visit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+.box { border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+.box h3 { margin: 0 0 8px; font: 700 26px var(--display); }
+.box p { margin: 0 0 6px; color: var(--muted); font-size: 16px; }
+.hours { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.hours td { padding: 5px 0; border-top: 1px solid var(--line); color: var(--muted); }
+.hours td:last-child { text-align: right; }
+.hours tr.today td { color: var(--ink); font-weight: 700; }
+.grapes { display: flex; flex-wrap: wrap; gap: 8px; }
+.grapes span { border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; font-size: 15px; }
+footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="concept">Redesign concept by Jonathan Satina. This is not the winery's official website, which is at <a href="https://sarahsvineyardwinery.com">sarahsvineyardwinery.com</a>.</div>
+
+<header class="wrap">
+  <span class="logo">Sarah's Vineyard</span>
+  <a class="back" href="../index.html">Back to portfolio</a>
+</header>
+
+<main>
+  <div class="hero">
+    <svg class="scene" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Drawing of vineyard rows on a hill at dusk">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1320"/><stop offset="0.7" stop-color="#5a2f4a"/><stop offset="1" stop-color="#c9703f"/></linearGradient>
+      </defs>
+      <rect width="1200" height="360" fill="url(#sky)"/>
+      <circle cx="930" cy="92" r="60" fill="#f4e9da" opacity="0.08"/>
+      <circle cx="930" cy="92" r="34" fill="#f4e9da"/>
+      <path d="M0 250 Q220 170 470 232 T900 214 T1200 236 V360 H0Z" fill="#3a2440"/>
+      <path d="M0 290 Q300 220 620 276 T1200 262 V360 H0Z" fill="#2a1c2e"/>
+      <g stroke="#1d1320" stroke-width="5" opacity="0.9">
+        <line x1="600" y1="268" x2="60" y2="360"/><line x1="600" y1="268" x2="260" y2="360"/><line x1="600" y1="268" x2="460" y2="360"/>
+        <line x1="600" y1="268" x2="660" y2="360"/><line x1="600" y1="268" x2="860" y2="360"/><line x1="600" y1="268" x2="1060" y2="360"/>
+      </g>
+      <path d="M300 120 q14 -12 28 0 q14 -12 28 0" fill="none" stroke="#f4e9da" stroke-width="3" opacity="0.7"/>
+      <path d="M380 96 q10 -9 20 0 q10 -9 20 0" fill="none" stroke="#f4e9da" stroke-width="2.5" opacity="0.5"/>
+    </svg>
+    <div class="wrap copy">
+      <h1>A winery and art gallery in Cuyahoga Valley.</h1>
+      <p>Sarah's Vineyard grows nine grape varieties on the property, across the road from Blossom Music Center.</p>
+      <div class="status" id="status" aria-live="polite"><i></i><span id="status-text">Checking hours</span></div>
+    </div>
+  </div>
+
+  <section class="wrap" id="wines">
+    <h2>What's pouring</h2>
+    <p class="lede">The list runs from dry Riesling to sweet Niagara. Use the filters to narrow it down.</p>
+    <div class="chips" role="group" aria-label="Filter wines">
+      <button type="button" id="w-all" data-f="all" aria-pressed="true">All</button>
+      <button type="button" id="w-red" data-f="red" aria-pressed="false">Reds</button>
+      <button type="button" id="w-white" data-f="white" aria-pressed="false">Whites and blush</button>
+      <button type="button" id="w-dry" data-f="dry" aria-pressed="false">Dry</button>
+      <button type="button" id="w-sweet" data-f="sweet" aria-pressed="false">Sweet</button>
+      <button type="button" id="w-estate" data-f="estate" aria-pressed="false">Estate grown</button>
+    </div>
+    <div class="wines" id="wine-grid"></div>
+  </section>
+
+  <section class="wrap">
+    <h2>Plan a visit</h2>
+    <p class="lede">Hours and prices are from the winery's site as of mid 2026, so confirm with them before you visit.</p>
+    <div class="visit">
+      <div class="box">
+        <h3>Hours</h3>
+        <table class="hours"><tbody id="hours"></tbody></table>
+      </div>
+      <div class="box">
+        <h3>Find us</h3>
+        <p>1204 W. Steels Corners Rd.<br>Cuyahoga Falls, Ohio 44223</p>
+        <p>330 929 8057</p>
+      </div>
+      <div class="box">
+        <h3>Solo at Sarah's</h3>
+        <p>Live acoustic music on Friday nights from 6 to 9, with wood fired pizza on select days and a rotating gallery of local art on the walls.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2>Grown on the hill</h2>
+    <p class="lede">Nine varieties are planted on the property.</p>
+    <div class="grapes"><span>Vidal</span><span>Seyval</span><span>Frontenac</span><span>Cabernet Franc</span><span>Chambourcin</span><span>Traminette</span><span>Cayuga</span><span>Niagara</span><span>Rubiana</span></div>
+  </section>
+</main>
+
+<footer class="wrap">Concept only. Design and code by Jonathan Satina. Names, wines and details belong to Sarah's Vineyard.</footer>
+
+<script>
+(function () {
+  var HOURS = [
+    { d: "Sunday", o: 12, c: 19 }, { d: "Monday" }, { d: "Tuesday" },
+    { d: "Wednesday", o: 12, c: 21 }, { d: "Thursday", o: 12, c: 21 },
+    { d: "Friday", o: 12, c: 21 }, { d: "Saturday", o: 12, c: 21 }
+  ];
+  function t(h) { return (h > 12 ? h - 12 : h) + (h >= 12 ? "pm" : "am"); }
+  var now = { day: new Date().getDay(), hour: new Date().getHours() };
+  try {
+    var parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "long", hour: "numeric", hour12: false }).formatToParts(new Date());
+    parts.forEach(function (p) {
+      if (p.type === "weekday") HOURS.forEach(function (h, i) { if (h.d === p.value) now.day = i; });
+      if (p.type === "hour") now.hour = parseInt(p.value, 10) % 24;
+    });
+  } catch (e) {}
+  var today = HOURS[now.day], open = today.o !== undefined && now.hour >= today.o && now.hour < today.c;
+  var st = document.getElementById("status"), txt = document.getElementById("status-text");
+  if (open) { st.className = "status open"; txt.textContent = "Open now until " + t(today.c); }
+  else {
+    var msg = "Closed right now";
+    if (today.o !== undefined && now.hour < today.o) msg = "Closed right now, opens today at " + t(today.o);
+    else for (var k = 1; k <= 7; k++) { var n = HOURS[(now.day + k) % 7]; if (n.o !== undefined) { msg = "Closed right now, opens " + (k === 1 ? "tomorrow" : n.d) + " at " + t(n.o); break; } }
+    txt.textContent = msg;
+  }
+  document.getElementById("hours").innerHTML = [3, 4, 5, 6, 0, 1, 2].map(function (i) {
+    var h = HOURS[i];
+    return '<tr class="' + (i === now.day ? "today" : "") + '"><td>' + h.d + "</td><td>" + (h.o !== undefined ? t(h.o) + " to " + t(h.c) : "Closed") + "</td></tr>";
+  }).join("");
+
+  var WINES = [
+    { n: "Blue Heron Blush", s: "Blush, Ohio table wine", cat: ["white", "sweet", "estate"], sw: "#d98a8f", sweet: 62, d: "An estate blend of Vidal, Seyval, Cayuga, Traminette and Rubiana that comes out semi sweet and refreshing.", g: 8, b: 27 },
+    { n: "Double Trouble", s: "Dry white, Vidal and Traminette", cat: ["white", "dry", "estate"], sw: "#e7d292", sweet: 18, d: "A dry, balanced white named for the vineyard dogs, Stanley and Fronty.", g: 8, b: 27 },
+    { n: "Sarah's Secret", s: "Semi sweet Ohio red", cat: ["red", "sweet", "estate"], sw: "#8e2f3e", sweet: 58, d: "Estate Frontenac and California Zinfandel with black cherry and a little spice.", g: 8, b: 27 },
+    { n: "Painted Lady", s: "Dry Riesling", cat: ["white", "dry"], sw: "#ecd98a", sweet: 24, d: "A crisp, fruity Riesling from grapes grown near Lake Erie and in California.", g: 7, b: 23 },
+    { n: "Hampton Hills", s: "Chardonnay", cat: ["white", "dry"], sw: "#e3cd84", sweet: 20, d: "A mellow, dry Chardonnay with a hint of apple.", g: 7, b: 23 },
+    { n: "Cuyahoga Valley Reserve", s: "Red Zinfandel", cat: ["red", "dry"], sw: "#7a2533", sweet: 30, d: "A rich, oak aged Zinfandel with red cherry up front.", g: 8, b: 27 },
+    { n: "Miserabile", s: "Dry red, Tuscan style blend", cat: ["red", "dry"], sw: "#6e2230", sweet: 22, d: "Merlot, Sangiovese and Rubiana in a smooth, lightly oaked red.", g: 8, b: 27 },
+    { n: "Irritablé", s: "Dry red, Muscat, Alicante and Zin", cat: ["red", "dry"], sw: "#7e2535", sweet: 30, d: "A dry and fruity red named after bartender Don Ross.", g: 7, b: 23 },
+    { n: "Golden Solstice", s: "Sweet Ohio white", cat: ["white", "sweet"], sw: "#edc560", sweet: 82, d: "A fragrant sweet white made from Ohio Niagara grapes." }
+  ];
+  var grid = document.getElementById("wine-grid"), chips = document.querySelectorAll(".chips button");
+  function show(f) {
+    grid.innerHTML = WINES.filter(function (w) { return f === "all" || w.cat.indexOf(f) >= 0; }).map(function (w) {
+      return '<article class="wine" style="--sw:' + w.sw + '"><h3>' + w.n + '</h3><span class="style">' + w.s + (w.cat.indexOf("estate") >= 0 ? ", estate grown" : "") + "</span><p>" + w.d + "</p>" +
+        '<div class="gauge"><div class="track"><span class="dot" style="left:' + w.sweet + '%"></span></div><div class="ends"><span>Dry</span><span>Sweet</span></div></div>' +
+        (w.g ? '<span class="price">$' + w.g + " a glass, $" + w.b + " a bottle</span>" : '<span class="price">Ask at the bar for pricing</span>') + "</article>";
+    }).join("");
+  }
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.setAttribute("aria-pressed", x === c ? "true" : "false"); });
+      show(c.getAttribute("data-f"));
+    });
+  });
+  show("all");
+})();
+</script>
+</body>
+</html>

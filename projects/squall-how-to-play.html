@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQUALL How to Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a one page field manual in the same radar world as the game,
+   read top to bottom in the order you need it during a shift. */
+:root {
+  --bg: #0b1114;
+  --surface: #141d22;
+  --ink: #e6eef0;
+  --muted: #9fb0b6;
+  --line: #26343b;
+  --accent: #7fe3ff;
+  --display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "Barlow", "Segoe UI", Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 18px 56px; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 0; }
+.pill { font-size: 13px; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; }
+.pill:hover { border-color: var(--ink); }
+h1 { margin: 10px 0 8px; font: 800 clamp(40px, 8vw, 64px)/0.95 var(--display); letter-spacing: 0.04em; }
+.lede { margin: 0; color: var(--muted); max-width: 56ch; }
+section { margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); }
+h2 { margin: 0 0 10px; font: 700 28px/1.1 var(--display); letter-spacing: 0.04em; color: var(--accent); }
+p { margin: 0 0 12px; max-width: 62ch; }
+ol, ul { margin: 0; padding-left: 22px; max-width: 62ch; }
+li { margin-bottom: 8px; }
+.scale { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 6px 0 14px; }
+.scale div { background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--c); border-radius: 8px; padding: 12px; }
+.scale b { display: block; font: 700 20px var(--display); letter-spacing: 0.03em; }
+.scale span { font-size: 15px; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 9px 8px 9px 0; border-bottom: 1px solid var(--line); font-size: 16px; vertical-align: top; }
+th { font: 500 13px var(--body); color: var(--muted); letter-spacing: 0.06em; }
+td:last-child, th:last-child { text-align: right; white-space: nowrap; }
+.play { display: inline-block; margin-top: 30px; font: 700 20px var(--display); letter-spacing: 0.06em; text-decoration: none; color: var(--bg); background: var(--accent); border-radius: 6px; padding: 12px 28px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="pill" href="squall.html">Back to the game</a>
+    <a class="pill" href="../index.html">Back to portfolio</a>
+  </header>
+
+  <h1>HOW TO PLAY SQUALL</h1>
+  <p class="lede">You are the forecaster on duty for Northeast Ohio. Storms move across the radar for two and a half minutes, and your job is to warn each town before severe weather reaches it.</p>
+
+  <section>
+    <h2>THE GOAL</h2>
+    <p>Finish the shift with public trust above zero and the highest score you can get. You earn points for warning a town before a severe storm arrives. You lose trust when a severe storm hits a town with no warning, and you lose a smaller amount when you warn a town and nothing severe shows up.</p>
+  </section>
+
+  <section>
+    <h2>READING THE RADAR</h2>
+    <p>Every storm is drawn in the colors a weather radar uses. The strongest color inside a storm tells you how strong it is right now.</p>
+    <p>Storms come in three shapes. A squall line is a long curved band that can sweep over several towns at once. A supercell is a single large storm with a hook curling off the back, and it always arrives severe. A cluster is a ragged clump that can go either way.</p>
+    <div class="scale">
+      <div style="--c:#2fbf5f"><b>Green</b><span>Light rain. No warning needed.</span></div>
+      <div style="--c:#e6d23a"><b>Yellow</b><span>Heavy rain. No warning needed yet.</span></div>
+      <div style="--c:#e5484d"><b>Red</b><span>Severe storm. Towns in its path need a warning.</span></div>
+      <div style="--c:#d94fd0"><b>Magenta</b><span>Tornadic storm. Towns in its path need a warning.</span></div>
+    </div>
+    <ul>
+      <li>The dashed line in front of a storm shows where it is heading.</li>
+      <li>The label above a storm says whether it is growing, fading or steady. A yellow storm that is growing can turn red before it reaches a town, and a red storm that is fading can drop to yellow.</li>
+      <li>Only the strength at the moment a storm reaches a town counts.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>ISSUING WARNINGS</h2>
+    <ol>
+      <li>Click a town on the map, or use its button under the map, to put it under a warning.</li>
+      <li>A warning lasts 14 seconds. The red ring around the town shows how much time is left.</li>
+      <li>You can have four warnings out at once, so you can't warn every town all the time.</li>
+      <li>A warning can't be cancelled once it's issued.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>SCORING</h2>
+    <table>
+      <thead><tr><th>WHAT HAPPENS</th><th>RESULT</th></tr></thead>
+      <tbody>
+        <tr><td>A severe storm reaches a town that is under a warning</td><td>+100 to +200 points, +3 trust</td></tr>
+        <tr><td>A severe storm reaches a town with no warning</td><td>20 trust lost</td></tr>
+        <tr><td>A warning expires and nothing severe arrived</td><td>8 trust lost</td></tr>
+        <tr><td>Rain reaches a town that isn't under a warning</td><td>Nothing</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px">The point bonus depends on lead time. A warning issued six or more seconds before the storm arrives earns the full 200 points, and a warning issued at the last second earns 100.</p>
+  </section>
+
+  <section>
+    <h2>TIPS</h2>
+    <ul>
+      <li>Watch the west edge of the map, since that is where every storm enters.</li>
+      <li>Follow the dashed line to see which towns a storm will cross before you decide.</li>
+      <li>Warn early on red storms that are growing, and hold off on red storms that are fading and still far away.</li>
+      <li>Storms come faster and stronger late in the shift, so keep at least one warning free.</li>
+      <li>A town is hit as soon as any part of a storm passes over it, so watch the edges of a squall line and not just the middle.</li>
+    </ul>
+  </section>
+
+  <a class="play" href="squall.html">Start a shift</a>
+</div>
+</body>
+</html>

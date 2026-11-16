@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VertiGarden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: the page is vertical like the product. A tall tower stands on the right,
+   and you plant its twelve pockets yourself from a seed tray. */
+:root {
+  --bg: #eaf3ea;
+  --surface: #f8fbf6;
+  --ink: #10261b;
+  --muted: #4d6558;
+  --line: #c4d6c7;
+  --accent: #e2512f;
+  --tower: #ffffff;
+  --display: "Outfit", "Segoe UI", Arial, sans-serif;
+  --body: "DM Sans", "Segoe UI", Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 clamp(18px, 5vw, 48px); }
+header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 20px; }
+.logo { font: 700 22px var(--display); letter-spacing: -0.01em; }
+.back { font: 500 14px var(--body); text-decoration: none; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 16px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: clamp(20px, 5vw, 60px); padding-top: clamp(24px, 5vw, 56px); padding-bottom: clamp(30px, 6vw, 70px); align-items: start; }
+h1 { margin: 0; font: 700 clamp(40px, 6.6vw, 76px)/1 var(--display); letter-spacing: -0.02em; }
+h1 span { display: block; }
+h1 span:nth-child(2) { color: var(--accent); }
+.hero p { max-width: 48ch; margin: 22px 0 0; color: var(--muted); }
+.tray { margin-top: 26px; }
+.tray h2 { margin: 0 0 10px; font: 700 14px var(--body); color: var(--muted); }
+.seeds { display: flex; flex-wrap: wrap; gap: 8px; }
+.seeds button { font: 500 15px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.seeds button i { width: 18px; height: 18px; border-radius: 50%; background: var(--c); display: block; }
+.seeds button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+#tally { margin: 14px 0 0; font-size: 15px; color: var(--muted); min-height: 1.6em; }
+.towerbox { justify-self: center; text-align: center; }
+.tower { position: relative; width: 200px; margin: 0 auto; padding: 16px 0 0; }
+.tower::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 46px; width: 72px; transform: translateX(-50%); background: var(--tower); border: 2px solid var(--ink); border-radius: 18px 18px 4px 4px; }
+.pockets { position: relative; display: grid; grid-template-columns: 52px 52px; justify-content: space-between; gap: 12px; padding: 6px 0 14px; }
+.pockets button { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface); cursor: pointer; padding: 0; position: relative; }
+.pockets button::after { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--p, transparent); }
+.base { position: relative; height: 48px; background: var(--ink); border-radius: 10px 10px 16px 16px; color: var(--bg); font: 700 12px var(--body); display: grid; place-items: center; }
+.towerbox small { display: block; margin-top: 10px; color: var(--muted); font-size: 14px; }
+section { padding-top: clamp(30px, 5vw, 60px); padding-bottom: clamp(30px, 5vw, 60px); }
+h2.big { margin: 0 0 22px; font: 700 clamp(28px, 4.2vw, 44px)/1.05 var(--display); letter-spacing: -0.015em; }
+.three { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 0; border-top: 2px solid var(--ink); }
+.three div { padding: 22px 22px 22px 0; border-bottom: 1px solid var(--line); }
+.three h3 { margin: 0 0 8px; font: 600 24px var(--display); }
+.three p { margin: 0; color: var(--muted); }
+.how { background: var(--ink); color: var(--bg); border-radius: 14px; padding: clamp(24px, 5vw, 52px); }
+.how ol { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 22px; counter-reset: s; }
+.how li { counter-increment: s; }
+.how li::before { content: counter(s); display: block; font: 700 36px/1 var(--display); color: var(--accent); margin-bottom: 6px; }
+.how p { margin: 0; opacity: 0.86; font-size: 16px; }
+.cta { display: inline-block; margin-top: 8px; font: 700 17px var(--body); text-decoration: none; background: var(--accent); color: #fff; border-radius: 999px; padding: 12px 26px; }
+footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <span class="logo">VertiGarden</span>
+  <a class="back" href="../index.html">Back to portfolio</a>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1><span>Grow More.</span><span>Use Less.</span><span>Eat Better.</span></h1>
+      <p>VertiGarden is an aeroponic tower for growing greens, herbs and strawberries at home without soil. Plants sit in pockets along the sides of the tower, and their roots are misted with water and nutrients from the inside.</p>
+      <div class="tray">
+        <h2>PLANT YOUR TOWER: PICK A SEED, THEN TAP A POCKET</h2>
+        <div class="seeds" id="seeds" role="group" aria-label="Seeds"></div>
+        <p id="tally" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="towerbox">
+      <div class="tower">
+        <div class="pockets" id="pockets"></div>
+        <div class="base">WATER AND NUTRIENTS</div>
+      </div>
+      <small>Twelve pockets shown for the demo</small>
+    </div>
+  </div>
+
+  <section class="wrap">
+    <div class="three">
+      <div><h3>Grow more</h3><p>The plants stack vertically instead of spreading across a garden bed, so a balcony or a corner of the kitchen is enough space.</p></div>
+      <div><h3>Use less</h3><p>Water the roots don't absorb drains back to the base and is pumped through again, so very little goes to waste.</p></div>
+      <div><h3>Eat better</h3><p>Produce is at its best right after it's picked, and the tower keeps it a few steps from the kitchen.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="how">
+      <h2 class="big">How aeroponics works</h2>
+      <ol>
+        <li><p>Seedlings sit in the pockets with their roots hanging down inside the hollow tower.</p></li>
+        <li><p>A small pump in the base pushes water mixed with nutrients up to the top.</p></li>
+        <li><p>The water rains down over the bare roots as a mist, so they get air and food at the same time.</p></li>
+        <li><p>Whatever is left collects in the base and goes around again on the next cycle.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 class="big">Interested in VertiGarden?</h2>
+    <p style="max-width:52ch;color:var(--muted);margin:0 0 14px">VertiGarden is a product concept. I'm happy to walk through the design, the pitch and the go to market plan.</p>
+    <a class="cta" href="../index.html#contact">Get in touch</a>
+  </section>
+</main>
+
+<footer class="wrap">VertiGarden is a product concept by Jonathan Satina. It isn't for sale yet.</footer>
+
+<script>
+(function () {
+  var SEEDS = [
+    { id: "lettuce", name: "Lettuce", c: "#8ccf5a" },
+    { id: "basil", name: "Basil", c: "#2f8f4e" },
+    { id: "kale", name: "Kale", c: "#1f5d46" },
+    { id: "strawberry", name: "Strawberry", c: "#e2512f" },
+    { id: "mint", name: "Mint", c: "#5fd0a8" },
+    { id: "none", name: "Clear a pocket", c: "transparent" }
+  ];
+  var current = SEEDS[0], planted = [];
+  var seedsEl = document.getElementById("seeds"), pocketsEl = document.getElementById("pockets"), tally = document.getElementById("tally");
+  for (var k = 0; k < 12; k++) planted.push(k < 3 ? SEEDS[k] : null);
+
+  function seedById(id) { for (var i = 0; i < SEEDS.length; i++) if (SEEDS[i].id === id) return SEEDS[i]; return null; }
+  function draw() {
+    seedsEl.innerHTML = "";
+    SEEDS.forEach(function (s) {
+      var b = document.createElement("button");
+      b.type = "button"; b.id = "seed-" + s.id;
+      b.setAttribute("aria-pressed", s === current ? "true" : "false");
+      b.innerHTML = '<i style="--c:' + s.c + (s.id === "none" ? ";border:1px dashed currentColor" : "") + '"></i>' + s.name;
+      b.addEventListener("click", function () { current = s; draw(); });
+      seedsEl.appendChild(b);
+    });
+    pocketsEl.innerHTML = "";
+    planted.forEach(function (p, i) {
+      var b = document.createElement("button");
+      b.type = "button"; b.id = "pocket-" + i;
+      b.setAttribute("aria-label", "Pocket " + (i + 1) + (p ? ", " + p.name : ", empty"));
+      if (p) b.style.setProperty("--p", p.c);
+      b.addEventListener("click", function () { planted[i] = current.id === "none" ? null : current; draw(); });
+      pocketsEl.appendChild(b);
+    });
+    var counts = {}, total = 0;
+    planted.forEach(function (p) { if (p) { counts[p.id] = (counts[p.id] || 0) + 1; total++; } });
+    var parts = Object.keys(counts).map(function (id) { return counts[id] + " " + seedById(id).name.toLowerCase(); });
+    tally.textContent = total ? "Your tower has " + parts.join(", ") + " and " + (12 - total) + " open pockets." : "Your tower is empty, so pick a seed and start planting.";
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jonathan Satina Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one sheet of paper. Section labels sit in a narrow left column,
+   content in a wide right column, same type and colors as the portfolio. */
+:root {
+  --bg: #f1f2ee;
+  --surface: #fbfbf8;
+  --ink: #14181f;
+  --muted: #5b6470;
+  --line: #d5d8d2;
+  --accent: #1f47e6;
+  --display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+  --body: "Hanken Grotesk", "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1218; --surface: #171b23; --ink: #e9ebef; --muted: #9aa3b0; --line: #2a303b; --accent: #8ea4ff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1218; --surface: #171b23; --ink: #e9ebef; --muted: #9aa3b0; --line: #2a303b; --accent: #8ea4ff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+.top { display: flex; justify-content: space-between; align-items: center; padding-top: 22px; padding-bottom: 22px; font: 13px var(--mono); }
+.top a { text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; }
+.top a:hover { border-color: var(--ink); }
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: clamp(24px, 6vw, 60px); margin-bottom: 48px; }
+h1 { margin: 0; font: 800 clamp(40px, 8vw, 72px)/0.95 var(--display); letter-spacing: -0.04em; }
+.contact { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 14px 0 0; padding: 0; list-style: none; font: 13px var(--mono); color: var(--muted); }
+.block { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 28px; padding-top: 26px; margin-top: 26px; border-top: 1px solid var(--line); }
+h2 { margin: 4px 0 0; font: 500 13px var(--mono); color: var(--accent); }
+p { margin: 0; max-width: 64ch; }
+.item + .item { margin-top: 20px; }
+.item h3 { margin: 0; font: 700 22px/1.2 var(--display); letter-spacing: -0.02em; }
+.item .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 16px; font: 13px var(--mono); color: var(--muted); margin: 2px 0 6px; }
+ul.pts { margin: 0; padding-left: 18px; }
+ul.pts li { margin-top: 4px; max-width: 62ch; }
+.skills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.skills li { border: 1px solid var(--line); border-radius: 999px; padding: 4px 13px; font-size: 15px; }
+@media (max-width: 640px) { .block { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span>JS / Resume</span><a href="index.html">Back to portfolio</a></div>
+
+  <main class="sheet">
+    <h1>Jonathan Satina</h1>
+    <ul class="contact">
+      <li>Akron, Ohio</li>
+      <li><a href="mailto:jonathansatina9@gmail.com">jonathansatina9@gmail.com</a></li>
+      <li><a href="https://www.linkedin.com/in/jonathan-satina-8547752aa/">LinkedIn</a></li>
+    </ul>
+
+    <section class="block">
+      <h2>SUMMARY</h2>
+      <p>Emerging Media and Technology student at Kent State University who pairs technical build skills with real product strategy and go to market experience, from a car deal intelligence web app to pitch materials and outreach plans for original product concepts. Brings more than four years of customer facing experience in fast paced service roles, with strong communication, reliability and problem solving.</p>
+    </section>
+
+    <section class="block">
+      <h2>SKILLS</h2>
+      <ul class="skills">
+        <li>Web development (HTML, CSS, JavaScript)</li>
+        <li>Python and automation</li>
+        <li>API integration and data analysis</li>
+        <li>Creative coding (p5.js)</li>
+        <li>Product pitching and go to market</li>
+        <li>Sales and customer service</li>
+        <li>Client communication</li>
+        <li>Team collaboration</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <h2>PROJECTS</h2>
+      <div>
+        <div class="item"><h3><a href="projects/dealshift.html">DealShift</a></h3><p>Built a car deal intelligence web app targeting the Ohio auto market, pulling and analyzing listing data to help users identify good deals.</p></div>
+        <div class="item"><h3><a href="projects/storystop.html">StoryStop</a></h3><p>Developed go to market strategy for a rotomolded community book sharing station, including pitch materials, a landing page and outreach plans, while preparing a provisional patent filing.</p></div>
+        <div class="item"><h3><a href="projects/vertigarden.html">VertiGarden</a></h3><p>Built pitch materials, a landing page and outreach strategy for an aeroponic tower garden product concept.</p></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>WORK HISTORY</h2>
+      <div>
+        <div class="item">
+          <h3>Server</h3>
+          <div class="meta"><span>Sarah's Vineyard, Cuyahoga Falls, OH</span><span>07/2020 to current</span></div>
+          <ul class="pts">
+            <li>Deliver consistent, high quality customer service while managing multiple tables in a fast paced setting.</li>
+            <li>Collaborate with kitchen and team members to keep food delivery and dining service running smoothly.</li>
+            <li>Handle cash transactions and restock supplies accurately during shifts.</li>
+          </ul>
+        </div>
+        <div class="item">
+          <h3>Sales Agent</h3>
+          <div class="meta"><span>Rotoservice, Tallmadge, OH</span><span>08/2024 to 11/2024</span></div>
+          <ul class="pts">
+            <li>Built tailored sales strategies and followed up with clients to increase satisfaction and repeat business.</li>
+            <li>Responded quickly and courteously to customer requests, inquiries and concerns.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>EDUCATION</h2>
+      <div class="item">
+        <h3>Kent State University</h3>
+        <div class="meta"><span>Bachelor of Science, Emerging Media and Technology</span><span>Expected 05/2027</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

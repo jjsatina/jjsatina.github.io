@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQUALL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a forecaster's desk. The radar scope fills the page, the status strip sits
+   above it, and a row of town buttons sits below so every warning is one tap away. */
+:root {
+  --bg: #0b1114;
+  --surface: #141d22;
+  --ink: #e6eef0;
+  --muted: #8fa1a8;
+  --line: #26343b;
+  --accent: #7fe3ff;
+  --good: #35c46a;
+  --warn: #e8d44d;
+  --bad: #e5484d;
+  --display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "Barlow", "Segoe UI", Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 var(--body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 940px; margin: 0 auto; padding: 0 14px 40px; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 0 10px; }
+h1 { margin: 0; font: 800 40px/0.9 var(--display); letter-spacing: 0.06em; }
+h1 small { display: block; font: 500 14px var(--body); letter-spacing: 0; color: var(--muted); margin-top: 6px; }
+.links { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 13px; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; }
+.pill:hover { border-color: var(--ink); }
+.hud { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.hud > div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+.hud > div > span { display: block; font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+.hud b { font: 700 24px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 7px; }
+.bar i { display: block; height: 100%; width: 100%; background: var(--good); transition: width 0.25s; }
+.scope { position: relative; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #081013; }
+canvas { display: block; width: 100%; height: auto; cursor: crosshair; }
+.overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px; text-align: center; background: rgba(8, 16, 19, 0.88); }
+.overlay[hidden] { display: none; }
+.overlay h2 { margin: 0; font: 800 clamp(30px, 6vw, 52px)/1 var(--display); letter-spacing: 0.05em; }
+.overlay p { margin: 0; max-width: 46ch; color: var(--muted); }
+.overlay .stats { color: var(--ink); font-variant-numeric: tabular-nums; }
+.btn { font: 700 19px var(--display); letter-spacing: 0.06em; color: var(--bg); background: var(--accent); border: 0; border-radius: 6px; padding: 11px 26px; cursor: pointer; }
+#msg { min-height: 1.5em; margin: 10px 2px; color: var(--muted); }
+.towns { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.towns button { text-align: left; font: 500 15px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; cursor: pointer; }
+.towns button small { display: block; color: var(--muted); font-size: 12px; }
+.towns button:hover:not(:disabled) { border-color: var(--accent); }
+.towns button.on { border-color: var(--bad); background: rgba(229, 72, 77, 0.14); cursor: default; }
+.towns button.on small { color: var(--ink); }
+.key { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 14px; font-size: 13px; color: var(--muted); }
+.key i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+@media (max-width: 620px) { .hud { grid-template-columns: 1fr 1fr; } .hud > div:first-child { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>SQUALL<small>You run the warning desk. Warn each town before severe weather arrives.</small></h1>
+    <div class="links">
+      <a class="pill" href="squall-how-to-play.html">How to play</a>
+      <a class="pill" href="../index.html">Back to portfolio</a>
+    </div>
+  </header>
+
+  <div class="hud">
+    <div><span>PUBLIC TRUST</span><b id="trust">100</b><div class="bar"><i id="trust-bar"></i></div></div>
+    <div><span>SCORE</span><b id="score">0</b></div>
+    <div><span>SHIFT LEFT</span><b id="time">2:30</b></div>
+    <div><span>WARNINGS OUT</span><b id="active">0/4</b></div>
+  </div>
+
+  <div class="scope">
+    <canvas id="radar" width="900" height="560" role="img" aria-label="Radar map of Northeast Ohio with storms moving across it"></canvas>
+    <div class="overlay" id="overlay">
+      <h2 id="o-title">WARNING DESK</h2>
+      <p id="o-text">Storms cross the map from the west. Red and magenta cells are severe. Click a town to put it under a warning before a severe cell reaches it.</p>
+      <p class="stats" id="o-stats" hidden></p>
+      <button class="btn" id="start" type="button">Start shift</button>
+      <a class="pill" href="squall-how-to-play.html">Read the full instructions</a>
+    </div>
+  </div>
+
+  <p id="msg" aria-live="polite">Press Start shift when you're ready.</p>
+  <div class="towns" id="towns" aria-label="Issue a warning for a town"></div>
+  <div class="key">
+    <span><i style="--c:#2fbf5f"></i>Light rain</span>
+    <span><i style="--c:#e6d23a"></i>Heavy rain</span>
+    <span><i style="--c:#e5484d"></i>Severe storm</span>
+    <span><i style="--c:#d94fd0"></i>Tornadic storm</span>
+    <span>Town positions are approximate</span>
+  </div>
+</div>
+
+<script>
+(function () {
+  var W = 900, H = 560, SHIFT = 150, MAXWARN = 4, WARNLEN = 14;
+  var COLORS = ["#2fbf5f", "#e6d23a", "#e5484d", "#d94fd0"];
+  var TOWNS = [
+    { name: "Cleveland", x: 330, y: 95 }, { name: "Medina", x: 245, y: 265 },
+    { name: "Cuyahoga Falls", x: 440, y: 225 }, { name: "Akron", x: 405, y: 315 },
+    { name: "Kent", x: 545, y: 260 }, { name: "Canton", x: 480, y: 445 },
+    { name: "Wooster", x: 190, y: 430 }, { name: "Youngstown", x: 800, y: 285 }
+  ];
+  var cv = document.getElementById("radar"), g = cv.getContext("2d");
+  var cells, S, last = 0, sweep = 0;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function $(id) { return document.getElementById(id); }
+  function say(t) { $("msg").textContent = t; }
+
+  function reset() {
+    cells = [];
+    S = { running: false, time: SHIFT, trust: 100, score: 0, saves: 0, misses: 0, falses: 0, spawnT: 3 };
+    TOWNS.forEach(function (t) { t.warnT = 0; t.warnAge = 0; t.verified = false; t.flashT = 0; t.flashGood = false; });
+  }
+  function active() { return TOWNS.filter(function (t) { return t.warnT > 0; }).length; }
+
+  // Build a storm out of overlapping lobes so it looks like a real radar echo.
+  function shape(kind, R, ang) {
+    var lobes = [], fx = Math.cos(ang), fy = Math.sin(ang), i, n;
+    function add(along, across, r, w) { lobes.push({ dx: fx * along - fy * across, dy: fy * along + fx * across, r: r, w: w }); }
+    if (kind === "line") {
+      // squall line: a long bowed band that runs across the direction of travel
+      n = Math.floor(rand(7, 10));
+      var tilt = rand(-0.3, 0.3);
+      for (i = 0; i < n; i++) {
+        var t = i / (n - 1) * 2 - 1;
+        add(-t * t * R * 0.9 + t * tilt * R + rand(-4, 4), t * R * 2.1, R * rand(0.52, 0.7), rand(0.6, 1));
+      }
+    } else if (kind === "supercell") {
+      // supercell: a big core, rain spreading out ahead of it, and a hook curling off the back
+      add(0, 0, R * 0.78, 1);
+      add(R * 0.7, -R * 0.35, R * 0.55, 0.55);
+      add(R * 1.25, -R * 0.6, R * 0.4, 0.4);
+      add(-R * 0.45, R * 0.6, R * 0.27, 1);
+      add(-R * 0.78, R * 0.72, R * 0.21, 1);
+      add(-R * 0.98, R * 0.5, R * 0.17, 1);
+    } else {
+      // cluster: a ragged clump of cells
+      n = Math.floor(rand(4, 7));
+      for (i = 0; i < n; i++) add(rand(-0.75, 0.75) * R, rand(-0.75, 0.75) * R, R * rand(0.42, 0.72), rand(0.5, 1));
+    }
+    return lobes;
+  }
+  function spawn(startX) {
+    var prog = 1 - S.time / SHIFT;
+    var speed = rand(17, 25) + prog * 5, ang = rand(-0.28, 0.2);
+    var roll = Math.random(), kind = roll < 0.36 ? "line" : roll < 0.58 ? "supercell" : "cluster";
+    var inten = rand(0.9, 2.2) + (Math.random() < 0.35 + prog * 0.35 ? rand(0.5, 1.3) : 0);
+    if (kind === "supercell") inten = Math.max(inten, rand(2.3, 3.2));
+    var R = kind === "line" ? rand(30, 40) : rand(38, 54);
+    var c = { x: startX === undefined ? -150 : startX, y: rand(60, H - 60), vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed,
+      kind: kind, lobes: shape(kind, R, ang), inten: clamp(inten, 0, 3.99), trend: rand(-0.03, 0.055) + prog * 0.015, hit: {}, bolt: 0 };
+    c.top = Math.min.apply(null, c.lobes.map(function (l) { return l.dy - l.r; }));
+    cells.push(c);
+  }
+
+  function warn(i) {
+    var t = TOWNS[i];
+    if (!S.running || t.warnT > 0) return;
+    if (active() >= MAXWARN) { say("All " + MAXWARN + " warnings are in use. Wait for one to expire."); return; }
+    t.warnT = WARNLEN; t.warnAge = 0; t.verified = false;
+    say("Warning issued for " + t.name + ".");
+    hud();
+  }
+
+  function update(dt) {
+    var prog = 1 - S.time / SHIFT;
+    S.time -= dt;
+    S.spawnT -= dt;
+    if (S.spawnT <= 0) { spawn(); S.spawnT = (5.2 - prog * 2.8) * rand(0.8, 1.2); }
+
+    cells.forEach(function (c) {
+      c.x += c.vx * dt; c.y += c.vy * dt;
+      c.inten = clamp(c.inten + c.trend * dt, 0, 3.99);
+      TOWNS.forEach(function (t, i) {
+        if (c.hit[i]) return;
+        var over = c.lobes.some(function (l) {
+          var dx = c.x + l.dx - t.x, dy = c.y + l.dy - t.y;
+          return Math.sqrt(dx * dx + dy * dy) < l.r * 0.85 + 6;
+        });
+        if (!over) return;
+        c.hit[i] = true;
+        if (c.inten < 2) return;
+        t.flashT = 1.2;
+        if (t.warnT > 0) {
+          var pts = 100 + Math.round(Math.min(t.warnAge, 6) / 6 * 100);
+          S.score += pts; S.saves++; t.verified = true; t.flashGood = true;
+          S.trust = Math.min(100, S.trust + 3);
+          say(t.name + " was warned in time. +" + pts + " points.");
+        } else {
+          S.trust -= 20; S.misses++; t.flashGood = false;
+          say("A severe storm hit " + t.name + " with no warning. Trust dropped by 20.");
+        }
+      });
+    });
+    cells = cells.filter(function (c) { return c.x < W + 170 && c.y > -170 && c.y < H + 170; });
+
+    TOWNS.forEach(function (t) {
+      if (t.flashT > 0) t.flashT -= dt;
+      if (t.warnT <= 0) return;
+      t.warnT -= dt; t.warnAge += dt;
+      if (t.warnT <= 0) {
+        t.warnT = 0;
+        if (!t.verified) { S.falses++; S.trust -= 8; say("The " + t.name + " warning expired and nothing severe arrived. Trust dropped by 8."); }
+      }
+    });
+
+    if (S.trust <= 0) { S.trust = 0; finish(false); }
+    else if (S.time <= 0) { S.time = 0; finish(true); }
+  }
+
+  function finish(won) {
+    S.running = false;
+    $("o-title").textContent = won ? "SHIFT COMPLETE" : "TRUST LOST";
+    $("o-text").textContent = won
+      ? "You made it through the shift with the public still listening."
+      : "Too many missed storms and false alarms. People stopped listening to your warnings.";
+    var st = $("o-stats");
+    st.hidden = false;
+    st.textContent = "Score " + S.score + "  |  Towns warned in time " + S.saves + "  |  Missed " + S.misses + "  |  False alarms " + S.falses;
+    $("start").textContent = "Work another shift";
+    $("overlay").hidden = false;
+    hud();
+  }
+
+  function hud() {
+    $("trust").textContent = Math.round(S.trust);
+    var bar = $("trust-bar");
+    bar.style.width = S.trust + "%";
+    bar.style.background = S.trust > 60 ? "var(--good)" : S.trust > 30 ? "var(--warn)" : "var(--bad)";
+    $("score").textContent = S.score;
+    var s = Math.max(0, Math.ceil(S.time));
+    $("time").textContent = Math.floor(s / 60) + ":" + ("0" + s % 60).slice(-2);
+    $("active").textContent = active() + "/" + MAXWARN;
+    TOWNS.forEach(function (t, i) {
+      var b = $("town-" + i), on = t.warnT > 0;
+      b.className = on ? "on" : "";
+      b.disabled = !S.running || on;
+      b.lastChild.textContent = on ? "Warned for " + Math.ceil(t.warnT) + "s" : "Issue warning";
+    });
+  }
+
+  function draw() {
+    g.fillStyle = "#081013"; g.fillRect(0, 0, W, H);
+    g.strokeStyle = "rgba(127,227,255,0.08)"; g.lineWidth = 1;
+    for (var r = 90; r < 620; r += 90) { g.beginPath(); g.arc(W / 2, H / 2, r, 0, Math.PI * 2); g.stroke(); }
+    g.beginPath(); g.moveTo(W / 2, 0); g.lineTo(W / 2, H); g.moveTo(0, H / 2); g.lineTo(W, H / 2); g.stroke();
+    if (!reduce) {
+      g.strokeStyle = "rgba(127,227,255,0.22)"; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(W / 2, H / 2); g.lineTo(W / 2 + Math.cos(sweep) * 640, H / 2 + Math.sin(sweep) * 640); g.stroke();
+    }
+
+    cells.forEach(function (c) {
+      var lvl = Math.floor(c.inten), sp = Math.sqrt(c.vx * c.vx + c.vy * c.vy);
+      g.setLineDash([6, 8]); g.strokeStyle = "rgba(230,238,240,0.22)"; g.lineWidth = 1.5;
+      g.beginPath(); g.moveTo(c.x, c.y); g.lineTo(c.x + c.vx / sp * 300, c.y + c.vy / sp * 300); g.stroke();
+      g.setLineDash([]);
+      var rings = [[1, 0.34], [0.74, 0.55], [0.5, 0.8], [0.3, 0.97]];
+      for (var k = 0; k <= lvl; k++) {
+        g.globalAlpha = rings[k][1]; g.fillStyle = COLORS[k];
+        g.beginPath();
+        c.lobes.forEach(function (l) {
+          var rr = l.r * rings[k][0] * (k === 0 ? 1 : 0.55 + l.w * 0.45);
+          if (k >= 2 && l.w < 0.5) return;
+          g.moveTo(c.x + l.dx + rr, c.y + l.dy);
+          g.arc(c.x + l.dx, c.y + l.dy, rr, 0, Math.PI * 2);
+        });
+        g.fill();
+      }
+      g.globalAlpha = 1;
+      if (lvl >= 2 && !reduce) {
+        if (c.bolt <= 0 && Math.random() < (lvl === 3 ? 0.05 : 0.025)) { c.bolt = 0.12; c.boltLobe = Math.floor(Math.random() * c.lobes.length); }
+        if (c.bolt > 0) {
+          c.bolt -= 1 / 60;
+          var bl = c.lobes[c.boltLobe];
+          g.globalAlpha = 0.75; g.fillStyle = "#ffffff";
+          g.beginPath(); g.arc(c.x + bl.dx, c.y + bl.dy, bl.r * 0.3, 0, Math.PI * 2); g.fill();
+          g.globalAlpha = 1;
+        }
+      }
+      var label = c.trend > 0.012 ? "▲ growing" : c.trend < -0.012 ? "▼ fading" : "steady";
+      g.font = "600 13px Barlow, Arial, sans-serif"; g.textAlign = "center";
+      g.fillStyle = c.trend > 0.012 ? "#ffb3b5" : "#c9d6da";
+      g.fillText(label, c.x, c.y + c.top - 8);
+    });
+
+    TOWNS.forEach(function (t) {
+      if (t.warnT > 0) {
+        var pulse = reduce ? 0 : Math.sin(performance.now() / 160) * 2;
+        g.strokeStyle = "rgba(229,72,77,0.35)"; g.lineWidth = 3;
+        g.beginPath(); g.arc(t.x, t.y, 24 + pulse, 0, Math.PI * 2); g.stroke();
+        g.strokeStyle = "#e5484d"; g.lineWidth = 4;
+        g.beginPath(); g.arc(t.x, t.y, 24 + pulse, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (t.warnT / WARNLEN)); g.stroke();
+      }
+      if (t.flashT > 0) {
+        g.globalAlpha = clamp(t.flashT, 0, 1);
+        g.strokeStyle = t.flashGood ? "#35c46a" : "#ff6b6f"; g.lineWidth = 5;
+        g.beginPath(); g.arc(t.x, t.y, 24 + (1.2 - t.flashT) * 30, 0, Math.PI * 2); g.stroke();
+        g.globalAlpha = 1;
+      }
+      g.fillStyle = "#e6eef0"; g.beginPath(); g.arc(t.x, t.y, 5, 0, Math.PI * 2); g.fill();
+      g.font = "600 15px Barlow, Arial, sans-serif"; g.textAlign = "center";
+      g.lineWidth = 4; g.strokeStyle = "#081013"; g.strokeText(t.name, t.x, t.y + 22);
+      g.fillStyle = "#e6eef0"; g.fillText(t.name, t.x, t.y + 22);
+    });
+  }
+
+  function frame(now) {
+    var dt = Math.min((now - last) / 1000 || 0, 0.05); last = now;
+    sweep += dt * 0.9;
+    if (S.running) { update(dt); hud(); }
+    draw();
+    requestAnimationFrame(frame);
+  }
+
+  var list = $("towns");
+  TOWNS.forEach(function (t, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.id = "town-" + i;
+    b.appendChild(document.createTextNode(t.name));
+    var s = document.createElement("small"); s.textContent = "Issue warning"; b.appendChild(s);
+    b.addEventListener("click", function () { warn(i); });
+    list.appendChild(b);
+  });
+  cv.addEventListener("click", function (e) {
+    var rc = cv.getBoundingClientRect(), x = (e.clientX - rc.left) * W / rc.width, y = (e.clientY - rc.top) * H / rc.height;
+    var best = -1, bd = 34;
+    TOWNS.forEach(function (t, i) { var d = Math.sqrt((t.x - x) * (t.x - x) + (t.y - y) * (t.y - y)); if (d < bd) { bd = d; best = i; } });
+    if (best >= 0) warn(best);
+  });
+  $("start").addEventListener("click", function () {
+    reset(); S.running = true;
+    spawn(-30); spawn(-130);
+    $("overlay").hidden = true;
+    say("Your shift has started. Watch the west side of the map.");
+    hud();
+  });
+
+  reset(); hud();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
