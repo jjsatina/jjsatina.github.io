@@ -43,13 +43,11 @@ nav.bar a { flex: none; text-decoration: none; font: 500 15px var(--body); color
 nav.bar a:hover { color: var(--ink); background: var(--surface); }
 
 /* hero */
-.hero { position: relative; }
-.scene { display: block; width: 100%; height: auto; }
-.fly { animation: drift 6s ease-in-out infinite alternate; }
-.fly:nth-of-type(2n) { animation-duration: 8s; animation-delay: -2s; }
-.fly:nth-of-type(3n) { animation-duration: 7s; animation-delay: -4s; }
-@keyframes drift { from { transform: translate(0, 0); opacity: 0.2; } to { transform: translate(14px, -10px); opacity: 0.9; } }
-.hero .copy { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: end; padding-top: 6px; padding-bottom: 30px; }
+.hero { background: linear-gradient(180deg, var(--bg) 0%, #3a2140 55%, #6b3448 82%, #a8553f 100%); border-bottom: 1px solid var(--line); }
+.hero .copy { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: end; padding-top: clamp(48px, 8vw, 96px); padding-bottom: clamp(28px, 4vw, 44px); }
+.hero .eyebrow { margin: 0 0 14px; font: 700 13px var(--body); letter-spacing: 0.16em; color: var(--amber); }
+.grapes { display: flex; flex-wrap: wrap; gap: 6px 0; margin: 0; padding: 14px 0 18px; list-style: none; font: 600 italic 20px var(--display); color: rgba(244, 233, 218, 0.78); }
+.grapes li + li::before { content: "\00B7"; margin: 0 12px; color: var(--amber); font-style: normal; }
 h1 { margin: 0; font: 600 clamp(38px, 5.6vw, 66px)/1 var(--display); letter-spacing: -0.01em; text-wrap: balance; }
 .hero p.lede { max-width: 50ch; color: var(--muted); margin: 14px 0 0; }
 .now { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
@@ -196,7 +194,6 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .fly { animation: none; }
   .toast { transition: none; }
 }
 </style>
@@ -224,34 +221,9 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
 
 <main>
   <div class="hero">
-    <svg class="scene" viewBox="0 0 1200 340" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Drawing of vineyard rows on a hill at dusk with a heron flying over">
-      <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1320"/><stop offset="0.62" stop-color="#5a2f4a"/><stop offset="1" stop-color="#d07a42"/></linearGradient>
-        <radialGradient id="moonglow"><stop offset="0" stop-color="#f4e9da" stop-opacity="0.22"/><stop offset="1" stop-color="#f4e9da" stop-opacity="0"/></radialGradient>
-      </defs>
-      <rect width="1200" height="340" fill="url(#sky)"/>
-      <circle cx="940" cy="86" r="110" fill="url(#moonglow)"/>
-      <circle cx="940" cy="86" r="32" fill="#f4e9da"/>
-      <path d="M0 236 Q220 160 470 220 T900 200 T1200 222 V340 H0Z" fill="#3a2440"/>
-      <path d="M760 210 h60 v-26 l-30 -22 l-30 22 Z" fill="#2a1c2e"/>
-      <rect x="784" y="194" width="12" height="16" fill="#f0a441" opacity="0.85"/>
-      <path d="M0 276 Q300 206 620 262 T1200 248 V340 H0Z" fill="#2a1c2e"/>
-      <g stroke="#1d1320" stroke-width="5" opacity="0.92">
-        <line x1="600" y1="256" x2="40" y2="340"/><line x1="600" y1="256" x2="230" y2="340"/><line x1="600" y1="256" x2="420" y2="340"/>
-        <line x1="600" y1="256" x2="610" y2="340"/><line x1="600" y1="256" x2="800" y2="340"/><line x1="600" y1="256" x2="990" y2="340"/><line x1="600" y1="256" x2="1180" y2="340"/>
-      </g>
-      <g fill="#1d1320" opacity="0.85">
-        <path d="M300 110 q22 -16 46 -2 q10 -4 18 2 l-14 4 q-6 10 -22 8 q-14 6 -28 -12 z"/>
-        <path d="M356 108 l26 -4 l-24 8 z"/>
-      </g>
-      <g fill="#ffd27a">
-        <circle class="fly" cx="180" cy="250" r="2.2"/><circle class="fly" cx="260" cy="230" r="1.8"/><circle class="fly" cx="420" cy="262" r="2"/>
-        <circle class="fly" cx="700" cy="238" r="2.2"/><circle class="fly" cx="860" cy="262" r="1.8"/><circle class="fly" cx="1040" cy="240" r="2"/>
-        <circle class="fly" cx="560" cy="290" r="1.6"/><circle class="fly" cx="980" cy="300" r="1.8"/>
-      </g>
-    </svg>
     <div class="wrap copy">
       <div>
+        <p class="eyebrow">CUYAHOGA VALLEY NATIONAL PARK, SINCE 2007</p>
         <h1>Wine, wood fired pizza, and local art inside the national park.</h1>
         <p class="lede">Sarah's Vineyard grows nine grape varieties on its hill in Cuyahoga Valley National Park, right across from Blossom Music Center. Pour a glass in the tasting room, find a seat on the deck, or warm up by the pavilion fireplace.</p>
       </div>
@@ -260,6 +232,9 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
         <div class="row"><i class="dot" id="d-pizza"></i><div><b id="t-pizza">Pizza oven</b><span id="s-pizza"></span></div></div>
         <div class="row"><i class="dot" id="d-music"></i><div><b id="t-music">Live music</b><span id="s-music"></span></div></div>
       </div>
+    </div>
+    <div class="wrap">
+      <ul class="grapes" aria-label="Grapes grown on the property"><li>Vidal</li><li>Seyval</li><li>Frontenac</li><li>Cabernet Franc</li><li>Chambourcin</li><li>Traminette</li><li>Cayuga</li><li>Niagara</li><li>Rubiana</li></ul>
     </div>
   </div>
 
