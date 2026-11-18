@@ -76,7 +76,7 @@ footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
   <div class="wrap hero">
     <div>
       <h1><span>Grow More.</span><span>Use Less.</span><span>Eat Better.</span></h1>
-      <p>VertiGarden is an aeroponic tower for growing greens, herbs and strawberries at home without soil. Plants sit in pockets along the sides of the tower, and their roots are misted with water and nutrients from the inside.</p>
+      <p>VertiGarden is an aeroponic tower for growing greens, herbs, and strawberries at home without soil. Plants sit in pockets along the sides of the tower, and their roots are misted with water and nutrients from the inside.</p>
       <div class="tray">
         <h2>PLANT YOUR TOWER: PICK A SEED, THEN TAP A POCKET</h2>
         <div class="seeds" id="seeds" role="group" aria-label="Seeds"></div>
@@ -114,7 +114,7 @@ footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
 
   <section class="wrap">
     <h2 class="big">Interested in VertiGarden?</h2>
-    <p style="max-width:52ch;color:var(--muted);margin:0 0 14px">VertiGarden is a product concept. I'm happy to walk through the design, the pitch and the go to market plan.</p>
+    <p style="max-width:52ch;color:var(--muted);margin:0 0 14px">VertiGarden is a product concept. I'm happy to walk through the design, the pitch, and the go to market plan.</p>
     <a class="cta" href="../index.html#contact">Get in touch</a>
   </section>
 </main>
@@ -158,7 +158,7 @@ footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
     var counts = {}, total = 0;
     planted.forEach(function (p) { if (p) { counts[p.id] = (counts[p.id] || 0) + 1; total++; } });
     var parts = Object.keys(counts).map(function (id) { return counts[id] + " " + seedById(id).name.toLowerCase(); });
-    tally.textContent = total ? "Your tower has " + parts.join(", ") + " and " + (12 - total) + " open pockets." : "Your tower is empty, so pick a seed and start planting.";
+    tally.textContent = total ? "Your tower has " + (function (a) { return a.length < 3 ? a.join(" and ") : a.slice(0, -1).join(", ") + ", and " + a[a.length - 1]; })(total < 12 ? parts.concat([(12 - total) + " open pockets"]) : parts) + "." : "Your tower is empty, so pick a seed and start planting.";
   }
   draw();
 })();

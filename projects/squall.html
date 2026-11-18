@@ -214,7 +214,7 @@ canvas { display: block; width: 100%; height: auto; cursor: crosshair; }
       t.warnT -= dt; t.warnAge += dt;
       if (t.warnT <= 0) {
         t.warnT = 0;
-        if (!t.verified) { S.falses++; S.trust -= 8; say("The " + t.name + " warning expired and nothing severe arrived. Trust dropped by 8."); }
+        if (!t.verified) { S.falses++; S.trust -= 8; say("The " + t.name + " warning expired, and nothing severe arrived. Trust dropped by 8."); }
       }
     });
 
