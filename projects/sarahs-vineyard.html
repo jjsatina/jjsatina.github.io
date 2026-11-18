@@ -262,7 +262,7 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
       <button type="button" id="w-estate" data-f="estate" aria-pressed="false">Estate grown</button>
     </div>
     <div class="wines" id="wine-grid"></div>
-    <div class="note"><span><b>10% off</b> six or more bottles, mixed or matched</span><span><b>$1</b> samples of any wine</span><span>Sangria is served in house only</span></div>
+    <div class="note"><span><b>10% off</b> six or more bottles, mixed or matched</span><span><b>$1</b> samples of any wine</span></div>
   </section>
 
   <section class="wrap" id="food">
@@ -560,7 +560,7 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
     { n: "Cuyahoga Valley Reserve", s: "Red Zinfandel", cat: ["red", "dry"], sw: "#7a2533", sweet: 28, d: "A rich, oak aged Zinfandel from California's Sierra Foothills with red cherry up front.", p: [8, 17.5, 29, 29] },
     { n: "Miserabile", s: "Dry red, Tuscan style blend", cat: ["red", "dry"], sw: "#6e2230", sweet: 20, d: "Merlot, Sangiovese, and Rubiana in a smooth, lightly oaked red.", p: [8, 17.5, 29, 29] },
     { n: "Irritablé", s: "Dry red, Muscat, Alicante, and Zinfandel", cat: ["red", "dry"], sw: "#7e2535", sweet: 30, d: "Dry and fruity, named after bartender Don Ross.", p: [7, 14, 25, 25], out: true },
-    { n: "Sangria", s: "Sweet red sangria", cat: ["red", "sweet"], sw: "#b03a48", sweet: 76, d: "A wine blend poured over ice with fresh fruit. Served in house only.", p: [7, 13, 21, null] }
+    { n: "Sangria", s: "Sweet red sangria", cat: ["red", "sweet"], sw: "#b03a48", sweet: 76, d: "A wine blend poured over ice with fresh fruit, by the glass or a bottle to take home.", p: [7, 13, 21, "ask"] }
   ];
   var SIZES = ["Glass", "Half carafe", "Carafe", "Bottle"];
   var grid = $("wine-grid");
@@ -575,7 +575,7 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
         '<div class="gauge" aria-label="Sweetness"><div class="track"><span class="pin" style="left:' + w.sweet + '%"></span></div><div class="ends"><span>Dry</span><span>Sweet</span></div></div><div class="prices"></div>';
       var pr = a.querySelector(".prices");
       w.p.forEach(function (price, i) {
-        if (price === null) { var na = document.createElement("span"); na.className = "na"; na.textContent = "No bottles"; pr.appendChild(na); return; }
+        if (price === "ask") { var na = document.createElement("span"); na.className = "na"; na.innerHTML = "Bottle<br>ask at the bar"; pr.appendChild(na); return; }
         var b = document.createElement("button");
         b.type = "button";
         b.disabled = !!w.out;
