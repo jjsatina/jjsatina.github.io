@@ -8,8 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: a clean studio bay. The whole business is the before and after,
-   so a draggable paint slider is the hero and everything else stays quiet. */
+/* Layout idea: a clean studio bay. The before and after slider leads, then each
+   service gets a tool that shows what you're paying for: a PPF coverage map,
+   a tint shade preview, and a running estimate. */
 :root {
   --bg: #f3f2ee;
   --surface: #ffffff;
@@ -17,70 +18,205 @@
   --muted: #5d636d;
   --line: #d9d8d2;
   --accent: #1463d8;
+  --accent-soft: rgba(20, 99, 216, 0.1);
+  --good: #13824f;
+  --warn: #b8560c;
   --display: "Archivo", "Arial Narrow", Arial, sans-serif;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--display); }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .concept { background: var(--ink); color: var(--bg); font-size: 14px; text-align: center; padding: 7px 14px; }
-.wrap { max-width: 1060px; margin: 0 auto; padding: 0 clamp(18px, 5vw, 48px); }
-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 18px; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-left: clamp(18px, 5vw, 48px); padding-right: clamp(18px, 5vw, 48px); }
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 16px; padding-bottom: 10px; }
 .logo { font: 800 20px var(--display); font-stretch: 115%; letter-spacing: 0.02em; text-transform: uppercase; }
 .back { font-size: 14px; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; background: var(--surface); }
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; padding-top: clamp(24px, 5vw, 56px); padding-bottom: clamp(28px, 5vw, 60px); }
+nav.bar { position: sticky; top: 0; z-index: 20; background: rgba(243, 242, 238, 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav.bar .wrap { display: flex; align-items: center; gap: 4px; overflow-x: auto; padding-top: 8px; padding-bottom: 8px; scrollbar-width: none; }
+nav.bar a { flex: none; text-decoration: none; font-weight: 600; font-size: 15px; color: var(--muted); padding: 6px 12px; border-radius: 6px; }
+nav.bar a:hover { color: var(--ink); background: var(--surface); }
+nav.bar a.book { margin-left: auto; color: #fff; background: var(--accent); }
+
+.cta { display: inline-block; font-weight: 700; text-decoration: none; background: var(--accent); color: #fff; border-radius: 6px; padding: 12px 22px; }
+.cta.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; padding-top: clamp(24px, 5vw, 52px); padding-bottom: clamp(24px, 4vw, 44px); }
 h1 { margin: 0; font: 800 clamp(40px, 6.4vw, 76px)/0.95 var(--display); font-stretch: 85%; letter-spacing: -0.02em; text-transform: uppercase; text-wrap: balance; }
 h1 span { color: var(--accent); }
-.hero p { margin: 16px 0 22px; color: var(--muted); max-width: 46ch; }
-.cta { display: inline-block; font-weight: 700; text-decoration: none; background: var(--accent); color: #fff; border-radius: 6px; padding: 13px 24px; }
+.hero p { margin: 16px 0 20px; color: var(--muted); max-width: 46ch; }
+.ctas { display: flex; flex-wrap: wrap; gap: 10px; }
+.trust { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); }
+.trust div { font-size: 14px; color: var(--muted); }
+.trust b { display: block; font: 800 26px/1.1 var(--display); font-stretch: 85%; color: var(--ink); font-variant-numeric: tabular-nums; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-bottom: 14px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 14px; }
+.status i { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+.status.open i { background: var(--good); box-shadow: 0 0 0 4px rgba(19, 130, 79, 0.18); }
+
 .slider { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); --p: 50%; user-select: none; }
 .pane { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 14px; font: 700 13px var(--display); letter-spacing: 0.08em; color: #fff; }
-.after { background:
-  linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.55) 46%, rgba(255,255,255,0.08) 54%, transparent 62%),
-  linear-gradient(160deg, #0b2a5c, #05070c 70%); justify-content: flex-end; }
-.before { clip-path: inset(0 calc(100% - var(--p)) 0 0); background:
-  repeating-radial-gradient(circle at 30% 40%, rgba(255,255,255,0.10) 0 1px, transparent 1px 7px),
-  repeating-radial-gradient(circle at 70% 65%, rgba(255,255,255,0.08) 0 1px, transparent 1px 9px),
-  linear-gradient(160deg, #3b4658, #23272e 70%); }
+.after { background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.55) 46%, rgba(255,255,255,0.08) 54%, transparent 62%), linear-gradient(160deg, #0b2a5c, #05070c 70%); justify-content: flex-end; }
+.before { clip-path: inset(0 calc(100% - var(--p)) 0 0); background: repeating-radial-gradient(circle at 30% 40%, rgba(255,255,255,0.10) 0 1px, transparent 1px 7px), repeating-radial-gradient(circle at 70% 65%, rgba(255,255,255,0.08) 0 1px, transparent 1px 9px), linear-gradient(160deg, #3b4658, #23272e 70%); }
 .handle { position: absolute; top: 0; bottom: 0; left: var(--p); width: 3px; margin-left: -1.5px; background: #fff; pointer-events: none; }
 .handle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 38px; height: 38px; margin: -19px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); }
 .slider input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
-.hint { margin-top: 8px; font-size: 14px; color: var(--muted); text-align: center; }
-section { padding-top: clamp(28px, 5vw, 56px); padding-bottom: clamp(28px, 5vw, 56px); }
-h2 { margin: 0 0 20px; font: 800 clamp(28px, 4.4vw, 46px)/1 var(--display); font-stretch: 85%; text-transform: uppercase; }
-.svc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
-.svc article { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-.svc h3 { margin: 0; font: 700 21px/1.15 var(--display); }
-.svc .price { font: 800 30px var(--display); font-stretch: 85%; color: var(--accent); font-variant-numeric: tabular-nums; }
-.svc .price small { font: 500 14px var(--display); color: var(--muted); }
-.svc p { margin: 0; font-size: 15px; color: var(--muted); }
+.hint { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
+
+section { padding-top: clamp(40px, 6vw, 72px); padding-bottom: clamp(16px, 3vw, 28px); }
+.kicker { font: 800 13px var(--display); letter-spacing: 0.12em; color: var(--accent); margin: 0 0 6px; }
+h2 { margin: 0 0 8px; font: 800 clamp(30px, 4.6vw, 50px)/1 var(--display); font-stretch: 85%; text-transform: uppercase; text-wrap: balance; }
+.intro { margin: 0 0 22px; color: var(--muted); max-width: 64ch; }
+.pkgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 14px; }
+.pkg { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.pkg.star { border: 2px solid var(--accent); }
+.pkg .flag { align-self: flex-start; font: 800 11px var(--display); letter-spacing: 0.1em; color: #fff; background: var(--accent); border-radius: 4px; padding: 2px 8px; }
+.pkg h3 { margin: 0; font: 700 21px/1.15 var(--display); }
+.pkg .price { font: 800 32px/1 var(--display); font-stretch: 85%; color: var(--accent); font-variant-numeric: tabular-nums; }
+.pkg .price small { font: 500 14px var(--display); color: var(--muted); }
+.pkg .meta { font-size: 14px; font-weight: 600; color: var(--ink); }
+.pkg ul { margin: 0; padding-left: 18px; font-size: 15px; color: var(--muted); }
+.pkg li { margin-bottom: 3px; }
+.add { margin-top: auto; font: 700 15px var(--display); color: var(--accent); background: var(--accent-soft); border: 1px solid transparent; border-radius: 6px; padding: 9px 12px; cursor: pointer; }
+.add:hover { border-color: var(--accent); }
+.add[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.small-note { margin: 16px 0 0; font-size: 15px; color: var(--muted); max-width: 70ch; }
+.extras { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.extras span { font-size: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; }
+
+.ppf { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(18px, 4vw, 40px); align-items: start; }
+.carmap { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; position: sticky; top: 72px; }
+.carmap svg { width: 100%; max-width: 230px; height: auto; }
+.zone { fill: #e7e6e1; stroke: #b9b8b1; stroke-width: 1.2; transition: fill 0.25s; }
+.zone.on { fill: rgba(20, 99, 216, 0.55); stroke: var(--accent); }
+.glass { fill: #c9d3df; stroke: #b9b8b1; stroke-width: 1.2; }
+.carmap .legend { display: flex; justify-content: center; gap: 16px; font-size: 13px; color: var(--muted); margin-top: 8px; }
+.carmap .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.carmap b { display: block; font-size: 16px; margin-bottom: 4px; }
+.ppf .pkg { cursor: pointer; }
+.ppf .pkg.sel { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.tint { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(18px, 4vw, 40px); align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 14px; }
+.seg button { font: 600 14px var(--display); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.panel label, .panel .lab { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); }
+.shades { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 4px 0 14px; }
+.shades button { font: 700 15px var(--display); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 0; cursor: pointer; font-variant-numeric: tabular-nums; }
+.shades button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.preview { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 9; background: linear-gradient(180deg, #8ec5ff 0%, #d8ecff 55%, #6c8f5a 56%, #4d6d3e 100%); }
+.preview .sun { position: absolute; top: 14%; right: 18%; width: 54px; height: 54px; border-radius: 50%; background: #fff6c8; box-shadow: 0 0 40px 16px rgba(255, 246, 200, 0.7); }
+.preview .tree { position: absolute; bottom: 30%; width: 50px; height: 70px; border-radius: 50% 50% 8px 8px; background: #3f6a35; }
+.preview .film { position: absolute; inset: 0; background: #0d1116; transition: opacity 0.3s; }
+.preview .frame { position: absolute; inset: 0; border: 14px solid #1b1f25; border-radius: 10px; pointer-events: none; }
+.preview .vlt { position: absolute; left: 22px; bottom: 20px; font: 800 14px var(--display); color: #fff; background: rgba(0, 0, 0, 0.55); border-radius: 4px; padding: 3px 8px; }
+.law { margin-top: 12px; border-left: 4px solid var(--good); padding: 6px 0 6px 12px; font-size: 15px; }
+.law.bad { border-color: var(--warn); }
+.law b { display: block; }
+.law span { color: var(--muted); }
+.tprice { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.tprice b { font: 800 34px var(--display); font-stretch: 85%; color: var(--accent); font-variant-numeric: tabular-nums; }
+table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 18px; }
+table.cmp th, table.cmp td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+table.cmp th { font-size: 13px; letter-spacing: 0.06em; color: var(--muted); }
+.cmp-wrap { overflow-x: auto; }
+
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); border-top: 2px solid var(--ink); }
 .steps div { padding: 18px 18px 18px 0; }
 .steps b { font: 800 15px var(--display); color: var(--accent); letter-spacing: 0.06em; }
 .steps h3 { margin: 4px 0 6px; font: 700 20px var(--display); }
 .steps p { margin: 0; font-size: 15px; color: var(--muted); }
-.about { background: var(--ink); color: var(--bg); border-radius: 12px; padding: clamp(24px, 5vw, 52px); }
-.about p { max-width: 58ch; margin: 0 0 14px; opacity: 0.86; }
-.about .cta { margin-top: 6px; }
-footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
-@media (max-width: 800px) { .hero { grid-template-columns: 1fr; } }
+
+.care { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 14px; }
+.care details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+.care summary { cursor: pointer; font-weight: 700; font-size: 18px; }
+.care ul { margin: 10px 0 0; padding-left: 18px; font-size: 15px; color: var(--muted); }
+.care li { margin-bottom: 5px; }
+
+.about { background: var(--ink); color: var(--bg); border-radius: 12px; padding: clamp(24px, 5vw, 52px); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; }
+.about h2 { color: var(--bg); }
+.about p { margin: 0 0 14px; opacity: 0.86; max-width: 58ch; }
+.quote { border-left: 3px solid var(--accent); padding-left: 16px; }
+.quote .stars { color: #f5c22b; font-size: 20px; letter-spacing: 2px; }
+.quote p { font-size: 20px; opacity: 1; }
+.quote cite { font-style: normal; font-size: 14px; opacity: 0.7; }
+.brands { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.brands span { font-size: 14px; border: 1px solid rgba(243, 242, 238, 0.3); border-radius: 999px; padding: 4px 12px; }
+
+.visit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+.box h3 { margin: 0 0 8px; font: 700 20px var(--display); }
+.box p { margin: 0 0 8px; font-size: 15px; color: var(--muted); }
+.hours { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.hours td { padding: 5px 0; border-top: 1px solid var(--line); color: var(--muted); }
+.hours td:last-child { text-align: right; }
+.hours tr.today td { color: var(--ink); font-weight: 700; }
+
+.est-btn { position: fixed; right: 18px; bottom: 18px; z-index: 30; font: 700 16px var(--display); color: #fff; background: var(--ink); border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); font-variant-numeric: tabular-nums; }
+.est-btn[hidden], .est[hidden] { display: none; }
+.est { position: fixed; right: 18px; bottom: 76px; z-index: 31; width: min(370px, calc(100vw - 36px)); max-height: min(70vh, 540px); display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2); }
+.est-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.est-head h3 { margin: 0; font: 800 20px var(--display); text-transform: uppercase; font-stretch: 85%; }
+.est-head button { font: 600 14px var(--display); color: var(--muted); background: none; border: 0; cursor: pointer; }
+.est ul { list-style: none; margin: 0; padding: 4px 16px; overflow-y: auto; }
+.est li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.est li small { display: block; color: var(--muted); }
+.est li button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: none; cursor: pointer; font: 700 15px var(--display); color: var(--muted); }
+.est-foot { padding: 12px 16px 16px; }
+.est-foot .total { display: flex; justify-content: space-between; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums; }
+.est-foot p { margin: 6px 0 12px; font-size: 13px; color: var(--muted); }
+.est-foot .cta { display: block; text-align: center; }
+
+footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); margin-top: 40px; }
+
+@media (max-width: 820px) {
+  .hero, .ppf, .tint, .about { grid-template-columns: 1fr; }
+  .carmap { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .zone, .preview .film { transition: none; }
+}
 </style>
 </head>
 <body>
 <div class="concept">Redesign concept by Jonathan Satina. This is not the shop's official website, which is at <a href="https://www.specialtydetailingco.com">specialtydetailingco.com</a>.</div>
 
-<header class="wrap">
+<header class="wrap top">
   <span class="logo">Specialty Detailing Co.</span>
   <a class="back" href="../index.html">Back to portfolio</a>
 </header>
 
+<nav class="bar" aria-label="Sections">
+  <div class="wrap">
+    <a href="#detailing">Detailing</a>
+    <a href="#coating">Ceramic coating</a>
+    <a href="#ppf">PPF</a>
+    <a href="#tint">Window tint</a>
+    <a href="#process">Process</a>
+    <a href="#care">Aftercare</a>
+    <a href="#about">About</a>
+    <a href="#visit">Visit</a>
+    <a class="book" href="https://app.urable.com/virtual-shop/z3tj4cD6zJoZcjvR7FeT">Book now</a>
+  </div>
+</nav>
+
 <main>
   <div class="wrap hero">
     <div>
+      <span class="status" id="status" aria-live="polite"><i></i><span id="status-text">Checking hours</span></span>
       <h1>Paint that looks <span>better than new.</span></h1>
       <p>Ceramic coatings, paint protection film, window tint, and full detailing from a small shop in Bath, Ohio, where the owner works on every car himself.</p>
-      <a class="cta" href="https://www.specialtydetailingco.com">Book on the official site</a>
+      <div class="ctas">
+        <a class="cta" href="https://app.urable.com/virtual-shop/z3tj4cD6zJoZcjvR7FeT">Book a service</a>
+        <a class="cta ghost" href="#detailing">See packages and prices</a>
+      </div>
+      <div class="trust">
+        <div><b>4.9</b>Star rating</div>
+        <div><b>8+ years</b>Hands on experience</div>
+        <div><b>Up to 10</b>Year warranties</div>
+      </div>
     </div>
     <div>
       <div class="slider" id="slider">
@@ -89,22 +225,114 @@ footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
         <div class="handle"></div>
         <input id="ba" type="range" min="0" max="100" value="50" aria-label="Drag to compare paint before and after correction">
       </div>
-      <p class="hint">Drag across the panel to see swirled paint next to corrected paint. This is an illustration and not a photo of a customer car.</p>
+      <p class="hint">Drag across the panel to compare swirled paint with corrected paint. This is an illustration and not a photo of a customer car.</p>
     </div>
   </div>
 
-  <section class="wrap">
-    <h2>Services</h2>
-    <div class="svc">
-      <article><h3>Ceramic coating</h3><span class="price"><small>from </small>$300</span><p>A hard, glossy layer that makes the car easier to wash and keeps the finish from dulling.</p></article>
-      <article><h3>Paint protection film</h3><span class="price"><small>from </small>$600</span><p>Clear SunTek film that protects the paint from rock chips and scratches.</p></article>
-      <article><h3>Window tint</h3><span class="price"><small>from </small>$120</span><p>Reduces heat and glare and protects the interior from sun damage.</p></article>
-      <article><h3>Interior and exterior detailing</h3><span class="price"><small>from </small>$150</span><p>A deep clean inside and out, from a seasonal refresh to a full restoration.</p></article>
-    </div>
-    <p class="hint" style="text-align:left">Starting prices are from the shop's site in summer 2026 and may have changed.</p>
+  <section class="wrap" id="detailing">
+    <p class="kicker">AUTO DETAILING</p>
+    <h2>Detail packages</h2>
+    <p class="intro">Most full details take three to six hours depending on the size and condition of the vehicle. Prices cover most vehicles in average condition.</p>
+    <div class="pkgs" id="pk-detail"></div>
+    <p class="small-note">These are added automatically when a car needs them:</p>
+    <div class="extras"><span>Pet hair removal, $50 to $100</span><span>Heavy dirt or soiling, $50 to $150</span><span>Stain removal, $50 to $100</span><span>Ask about maintenance plans with member pricing</span></div>
   </section>
 
-  <section class="wrap">
+  <section class="wrap" id="coating">
+    <p class="kicker">DR. BEASLEY'S CERAMIC COATING</p>
+    <h2>Ceramic coating</h2>
+    <p class="intro">A hard, glossy layer that repels water, resists UV and chemical stains, and makes the car far easier to keep clean. Used cars can be coated too, as long as the paint is corrected first.</p>
+    <div class="pkgs" id="pk-coat"></div>
+    <p class="small-note">Warranties are backed by the manufacturer and cover fading, oxidation, and loss of water beading under normal use. To keep a warranty valid, the car needs a yearly maintenance wash at the shop and the aftercare steps below. Wheels, glass, trim, and interior coating are available as add ons, and extra correction steps are quoted separately.</p>
+  </section>
+
+  <section class="wrap" id="ppf">
+    <p class="kicker">SUNTEK ULTRA PAINT PROTECTION FILM</p>
+    <h2>Paint protection film</h2>
+    <p class="intro">Clear film that takes rock chips, scratches, and bug splatter so the paint doesn't have to, and small swirls heal themselves with heat from the sun. Pick a package to see exactly what it covers.</p>
+    <div class="ppf">
+      <div class="carmap" aria-live="polite">
+        <b id="map-title">Partial Front</b>
+        <svg viewBox="0 0 200 372" role="img" aria-label="Top view of a car showing which panels the selected film package covers">
+          <rect class="zone" data-z="fb" x="48" y="14" width="104" height="24" rx="12"/>
+          <rect class="zone" data-z="hp" x="54" y="38" width="92" height="28"/>
+          <rect class="zone" data-z="hr" x="54" y="66" width="92" height="52"/>
+          <rect class="zone" data-z="flp" x="32" y="38" width="22" height="30" rx="4"/>
+          <rect class="zone" data-z="frp" x="146" y="38" width="22" height="30" rx="4"/>
+          <rect class="zone" data-z="flr" x="32" y="68" width="22" height="52" rx="2"/>
+          <rect class="zone" data-z="frr" x="146" y="68" width="22" height="52" rx="2"/>
+          <rect class="zone" data-z="ml" x="16" y="124" width="16" height="11" rx="3"/>
+          <rect class="zone" data-z="mr" x="168" y="124" width="16" height="11" rx="3"/>
+          <rect class="glass" x="62" y="118" width="76" height="40" rx="6"/>
+          <rect class="zone" data-z="apl" x="54" y="118" width="8" height="40"/>
+          <rect class="zone" data-z="apr" x="138" y="118" width="8" height="40"/>
+          <rect class="zone" data-z="roof" x="54" y="158" width="92" height="88" rx="4"/>
+          <rect class="zone" data-z="dl" x="32" y="120" width="22" height="126"/>
+          <rect class="zone" data-z="dr" x="146" y="120" width="22" height="126"/>
+          <rect class="zone" data-z="rkl" x="25" y="128" width="7" height="114" rx="3"/>
+          <rect class="zone" data-z="rkr" x="168" y="128" width="7" height="114" rx="3"/>
+          <rect class="glass" x="62" y="246" width="76" height="26" rx="6"/>
+          <rect class="zone" data-z="ril" x="32" y="246" width="22" height="30"/>
+          <rect class="zone" data-z="rir" x="146" y="246" width="22" height="30"/>
+          <rect class="zone" data-z="ql" x="32" y="276" width="22" height="50" rx="2"/>
+          <rect class="zone" data-z="qr" x="146" y="276" width="22" height="50" rx="2"/>
+          <rect class="zone" data-z="trunk" x="54" y="272" width="92" height="54"/>
+          <rect class="zone" data-z="rb" x="48" y="326" width="104" height="24" rx="12"/>
+        </svg>
+        <div class="legend"><span><i style="background:rgba(20,99,216,0.55)"></i>Covered</span><span><i style="background:#e7e6e1;border:1px solid #b9b8b1"></i>Not covered</span></div>
+      </div>
+      <div>
+        <div class="pkgs" id="pk-ppf" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))"></div>
+        <p class="small-note">Every package uses SunTek Ultra with a 10 year manufacturer warranty against yellowing, cracking, bubbling, and peeling. Headlight film can be added to any package. There's a free checkup one week after install to fix any lifting or bubbles, and film can be removed later without hurting the paint.</p>
+        <div class="extras"><span>Interior protection, from $50 to $350+</span><span>Extra coverage areas, from $75 to $300+</span><span>Ceramic coating can go right over PPF</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="tint">
+    <p class="kicker">WINDOW TINT</p>
+    <h2>Window tint</h2>
+    <p class="intro">Block heat, cut glare, and protect the interior. Choose where the tint goes, the film, and the shade to see how dark it looks and whether it's legal in Ohio.</p>
+    <div class="tint">
+      <div class="panel">
+        <span class="lab">WHERE</span>
+        <div class="seg" id="t-where" role="group" aria-label="Where the tint goes"></div>
+        <span class="lab">FILM</span>
+        <div class="seg" id="t-film" role="group" aria-label="Film type"></div>
+        <span class="lab">SHADE (HOW MUCH LIGHT GETS THROUGH)</span>
+        <div class="shades" id="t-shade" role="group" aria-label="Shade"></div>
+        <div class="tprice"><span id="t-label"></span><b id="t-price"></b></div>
+        <button type="button" class="add" id="t-add" style="width:100%;margin-top:10px">Add to estimate</button>
+      </div>
+      <div>
+        <div class="preview" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="tree" style="left:12%"></div>
+          <div class="tree" style="left:24%;height:56px;width:40px"></div>
+          <div class="film" id="t-film-layer"></div>
+          <div class="frame"></div>
+          <span class="vlt" id="t-vlt"></span>
+        </div>
+        <div class="law" id="t-law" aria-live="polite"><b></b><span></span></div>
+        <div class="cmp-wrap">
+          <table class="cmp">
+            <thead><tr><th></th><th>CARBON</th><th>CERAMIC</th><th>EVOLVE</th></tr></thead>
+            <tbody>
+              <tr><td>Heat rejection</td><td>Good</td><td>Great</td><td>Best</td></tr>
+              <tr><td>Blocks infrared heat</td><td>No</td><td>Yes</td><td>Highest</td></tr>
+              <tr><td>Clarity in light shades</td><td>Moderate</td><td>High</td><td>Crystal clear</td></tr>
+              <tr><td>UV protection, phone signal safe</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+              <tr><td>Best for</td><td>Budget</td><td>Comfort</td><td>Top performance</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small-note">Tint carries a limited lifetime warranty against bubbling, peeling, fading, and discoloring. Most jobs take one to three hours. Call for Evolve and clear windshield film pricing. Some shades may need to be ordered ahead.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="process">
+    <p class="kicker">THE PROCESS</p>
     <h2>How a car goes through the shop</h2>
     <div class="steps">
       <div><b>STEP 1</b><h3>Wash and decontaminate</h3><p>Hand wash, iron removal, and clay to get everything off the surface.</p></div>
@@ -114,21 +342,289 @@ footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
     </div>
   </section>
 
-  <section class="wrap">
+  <section class="wrap" id="care">
+    <p class="kicker">AFTERCARE</p>
+    <h2>Keep it looking like day one</h2>
+    <div class="care">
+      <details open>
+        <summary>Ceramic coating</summary>
+        <ul>
+          <li>Wait 7 days before the first wash.</li>
+          <li>Hand wash only, with no automatic car washes.</li>
+          <li>Use pH neutral soap and a soft wash mitt.</li>
+          <li>Book the yearly maintenance wash to keep the warranty valid.</li>
+        </ul>
+      </details>
+      <details open>
+        <summary>Paint protection film</summary>
+        <ul>
+          <li>Don't wash it for the first 7 days, and keep it out of the rain if you can.</li>
+          <li>Leave the film edges alone while it settles.</li>
+          <li>Use pH neutral soap and skip petroleum based waxes.</li>
+          <li>Keep a pressure washer at least 12 inches from the edges.</li>
+          <li>A few small bubbles early on are normal.</li>
+        </ul>
+      </details>
+      <details open>
+        <summary>Window tint</summary>
+        <ul>
+          <li>Keep the windows up for 3 to 5 days.</li>
+          <li>Wait 5 days before cleaning the inside of the glass.</li>
+          <li>Use an ammonia free cleaner and a microfiber towel, never a razor or scraper.</li>
+          <li>Some haze is normal and clears within two weeks, faster if you park in the sun.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <section class="wrap" id="about">
     <div class="about">
-      <h2>Owner operated</h2>
-      <p>Steve started by helping his dad clean the family car and went on to detail his own truck. He still works on every vehicle that comes through the shop, using SunTek film and Dr. Beasley's coatings.</p>
-      <a class="cta" href="https://www.specialtydetailingco.com">Visit the official site</a>
+      <div>
+        <p class="kicker" style="color:#8fb6ff">OWNER OPERATED</p>
+        <h2>One guy, every car</h2>
+        <p>Steve started by helping his dad clean the family car and went on to detail his own truck. Eight years later, he still works on every vehicle that comes through the shop in Bath himself, which means the person you talk to is the person doing the work.</p>
+        <p>The shop is licensed, certified, and insured, and it installs SunTek film and Dr. Beasley's coatings exclusively. If you're not happy with the result, Steve will make it right.</p>
+        <div class="brands"><span>SunTek PPF and tint</span><span>Dr. Beasley's coatings</span><span>Licensed and insured</span></div>
+      </div>
+      <div class="quote">
+        <div class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>"The owner is great to work with and excellent at communicating every detail of the job."</p>
+        <cite>Kate A., who had two vehicles detailed</cite>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="visit">
+    <p class="kicker">VISIT THE SHOP</p>
+    <h2>Find us in Bath</h2>
+    <div class="visit">
+      <div class="box">
+        <h3>Hours</h3>
+        <table class="hours"><tbody id="hours"></tbody></table>
+      </div>
+      <div class="box">
+        <h3>Location</h3>
+        <p>2432 N. Cleveland Massillon Rd.<br>Akron, Ohio 44333</p>
+        <p>Serving Bath, Fairlawn, Richfield, and nearby areas.</p>
+        <a class="cta ghost" href="https://www.google.com/maps/search/?api=1&amp;query=2432+N+Cleveland+Massillon+Rd+Akron+OH+44333">Get directions</a>
+      </div>
+      <div class="box">
+        <h3>Contact</h3>
+        <p>(216) 512 1581</p>
+        <p>info@specialtydetailingco.com</p>
+        <p><a href="https://www.instagram.com/specialtydetailingco">Instagram</a> and <a href="https://www.facebook.com/specialtydetailing.biz/">Facebook</a></p>
+      </div>
+      <div class="box">
+        <h3>Gift cards</h3>
+        <p>Good for any service, which makes them an easy gift for the car person in your life.</p>
+        <a class="cta" href="https://app.squareup.com/gift/8WMJ35AQF82HV/order">Buy a gift card</a>
+      </div>
     </div>
   </section>
 </main>
 
-<footer class="wrap">Concept only. Design and code by Jonathan Satina. The business name, services, and prices belong to Specialty Detailing Co.</footer>
+<footer class="wrap">Concept only. Design and code by Jonathan Satina. Services, prices, and details come from specialtydetailingco.com as of November 2026 and belong to Specialty Detailing Co.</footer>
+
+<button class="est-btn" id="est-btn" type="button" hidden aria-controls="est" aria-expanded="false">Estimate</button>
+<div class="est" id="est" hidden role="dialog" aria-label="Your estimate">
+  <div class="est-head"><h3>Your estimate</h3><button type="button" id="est-clear">Clear all</button></div>
+  <ul id="est-list"></ul>
+  <div class="est-foot">
+    <div class="total"><span>Starting at</span><span id="est-total">$0</span></div>
+    <p>Prices are starting points. Steve gives a final quote after seeing the car, and surcharges for pet hair, heavy soiling, or stains are extra.</p>
+    <a class="cta" href="https://app.urable.com/virtual-shop/z3tj4cD6zJoZcjvR7FeT">Book on the official site</a>
+  </div>
+</div>
 
 <script>
 (function () {
-  var s = document.getElementById("slider"), r = document.getElementById("ba");
-  r.addEventListener("input", function () { s.style.setProperty("--p", r.value + "%"); });
+  function $(id) { return document.getElementById(id); }
+  function money(v) { return "$" + v.toLocaleString("en-US"); }
+
+  /* before and after slider */
+  var sl = $("slider"), r = $("ba");
+  r.addEventListener("input", function () { sl.style.setProperty("--p", r.value + "%"); });
+
+  /* hours and open badge, in Ohio time */
+  var DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  var HOURS = [null, [9, 18], [9, 18], [9, 18], [9, 18], [9, 18], [9, 15]];
+  var wd = new Date().getDay(), hr = new Date().getHours() + new Date().getMinutes() / 60;
+  try {
+    var p = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+    wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday);
+    hr = (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60;
+  } catch (e) {}
+  function t(h) { return (h > 12 ? h - 12 : h) + (h >= 12 ? "pm" : "am"); }
+  var h = HOURS[wd], open = h && hr >= h[0] && hr < h[1];
+  if (open) { $("status").className = "status open"; $("status-text").textContent = "Open now until " + t(h[1]); }
+  else {
+    var msg = "Closed right now";
+    if (h && hr < h[0]) msg += ", opens today at " + t(h[0]);
+    else for (var k = 1; k <= 7; k++) { var n = HOURS[(wd + k) % 7]; if (n) { msg += ", opens " + (k === 1 ? "tomorrow" : DAYS[(wd + k) % 7]) + " at " + t(n[0]); break; } }
+    $("status-text").textContent = msg;
+  }
+  $("hours").innerHTML = [1, 2, 3, 4, 5, 6, 0].map(function (i) {
+    var x = HOURS[i];
+    return '<tr class="' + (i === wd ? "today" : "") + '"><td>' + DAYS[i] + "</td><td>" + (x ? t(x[0]) + " to " + t(x[1]) : "Closed") + "</td></tr>";
+  }).join("");
+
+  /* estimate */
+  var EST = [];
+  function inEst(key) { for (var i = 0; i < EST.length; i++) if (EST[i].key === key) return i; return -1; }
+  function toggle(key, name, sub, price) {
+    var i = inEst(key);
+    if (i >= 0) EST.splice(i, 1); else EST.push({ key: key, name: name, sub: sub, price: price });
+    renderEst();
+  }
+  function renderEst() {
+    var total = 0;
+    EST.forEach(function (x) { total += x.price; });
+    var btn = $("est-btn");
+    btn.hidden = !EST.length;
+    btn.textContent = "Estimate: " + EST.length + (EST.length === 1 ? " service, " : " services, ") + "from " + money(total);
+    if (!EST.length) { $("est").hidden = true; btn.setAttribute("aria-expanded", "false"); }
+    var ul = $("est-list");
+    ul.innerHTML = "";
+    EST.forEach(function (x, i) {
+      var li = document.createElement("li");
+      li.innerHTML = "<div>" + x.name + (x.sub ? "<small>" + x.sub + "</small>" : "") + "</div><span>" + money(x.price) + '</span><button type="button" aria-label="Remove ' + x.name + '">×</button>';
+      li.querySelector("button").addEventListener("click", function () { EST.splice(i, 1); renderEst(); });
+      ul.appendChild(li);
+    });
+    $("est-total").textContent = money(total);
+    document.querySelectorAll("[data-key]").forEach(function (b) {
+      var on = inEst(b.getAttribute("data-key")) >= 0;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.textContent = on ? "Added to estimate" : "Add to estimate";
+    });
+  }
+  $("est-btn").addEventListener("click", function () { var e = $("est"); e.hidden = !e.hidden; $("est-btn").setAttribute("aria-expanded", e.hidden ? "false" : "true"); });
+  $("est-clear").addEventListener("click", function () { EST = []; renderEst(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("est").hidden) { $("est").hidden = true; $("est-btn").setAttribute("aria-expanded", "false"); $("est-btn").focus(); } });
+
+  function card(group, p) {
+    var a = document.createElement("article");
+    a.className = "pkg" + (p.star ? " star" : "");
+    var html = (p.star ? '<span class="flag">' + p.star + "</span>" : "") + "<h3>" + p.n + "</h3>";
+    html += '<div class="price">' + (p.price ? "<small>from </small>" + money(p.price) : '<small>Call for pricing</small>') + "</div>";
+    if (p.meta) html += '<div class="meta">' + p.meta + "</div>";
+    html += "<ul>" + p.inc.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>";
+    a.innerHTML = html;
+    if (p.price) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "add";
+      b.id = "add-" + group + "-" + p.id;
+      b.setAttribute("data-key", group + ":" + p.id);
+      b.setAttribute("aria-pressed", "false");
+      b.textContent = "Add to estimate";
+      b.addEventListener("click", function (e) { e.stopPropagation(); toggle(group + ":" + p.id, p.n, p.label, p.price); });
+      a.appendChild(b);
+    }
+    return a;
+  }
+
+  var DETAIL = [
+    { id: "ext", n: "Exterior Detail", price: 140, label: "Detailing", inc: ["Foam wash with the two bucket method", "Clay bar and iron remover", "Ceramic sealant that lasts 6+ months", "Wheels and tires deep cleaned", "Paint safe microfiber dry"] },
+    { id: "int", n: "Interior Detail", price: 140, label: "Detailing", inc: ["Carpets, seats, mats, and trunk vacuumed", "Every surface wiped down, including vents and cupholders", "Interior glass and mirrors cleaned", "Dash, steering column, and trim dressed", "Cracks and crevices detailed, plus an air freshener"] },
+    { id: "basic", n: "Basic Detail", price: 150, label: "Detailing", inc: ["Hand wash with safe decontamination", "Glass cleaned inside and out", "Wheels and tires cleaned and dressed", "Quick wax or sealant", "Interior vacuum and wipe down"] },
+    { id: "prem", n: "Premium Detail", price: 350, label: "Detailing", inc: ["Everything in the Basic Detail", "Carpet and seat shampoo or steam", "Leather deep cleaned and conditioned", "Clay bar and iron decontamination", "Ceramic sealant for gloss and protection"] },
+    { id: "spec", n: "The Specialty Detail", price: 550, label: "Detailing", star: "FLAGSHIP", inc: ["Everything in the Premium Detail", "Extra attention to stains and wheels", "Engine bay cleaning", "A 1 year ceramic coating"] }
+  ];
+  var COAT = [
+    { id: "sport", n: "Sport", price: 300, meta: "1 year protection", label: "Ceramic coating", inc: ["Exterior decontamination and paint prep", "Light polishing if needed", "Professional grade 1 year coating", "Final inspection", "Made for leased or short term cars"] },
+    { id: "bronze", n: "Bronze", price: 700, meta: "3 year protection", label: "Ceramic coating", inc: ["Exterior detail", "One step paint correction", "Strong water beading", "Resists chemical stains", "Better gloss and clarity"] },
+    { id: "silver", n: "Silver", price: 900, meta: "7 year protection", label: "Ceramic coating", star: "LONGEST LASTING", inc: ["Exterior detail", "One step paint correction", "Self healing that erases light swirls with heat", "Top chemical and scratch resistance", "Deep, mirror like gloss"] },
+    { id: "gold", n: "Gold", price: 0, meta: "Ask the shop", inc: ["Listed by the shop with details available on request"] },
+    { id: "bra", n: "Clear Bra add on", price: 699, meta: "Pairs with any coating", label: "Add on", inc: ["Clear film on the front end to stop rock chips", "Add it to any coating package"] }
+  ];
+  var PPF = [
+    { id: "partial", n: "Partial Front", price: 900, meta: "About 1 day", label: "Paint protection film", z: ["fb", "hp", "flp", "frp", "ml", "mr"], inc: ["Full front bumper", "First 18 to 24 inches of the hood", "Front of the fenders", "Side mirrors"] },
+    { id: "full", n: "Full Front", price: 1800, meta: "About 2 days", label: "Paint protection film", star: "NO VISIBLE LINES", z: ["fb", "hp", "hr", "flp", "frp", "flr", "frr", "ml", "mr"], inc: ["Full hood", "Full front fenders", "Front bumper", "Side mirrors"] },
+    { id: "track", n: "Track Pack", price: 2300, meta: "About 3 days", label: "Paint protection film", z: ["fb", "hp", "hr", "flp", "frp", "flr", "frr", "ml", "mr", "apl", "apr", "rkl", "rkr", "ril", "rir"], inc: ["Everything in Full Front", "A pillars", "Rocker panels", "Impact areas behind the wheels"] },
+    { id: "all", n: "Full Vehicle", price: 5500, meta: "4 to 6 days", label: "Paint protection film", z: ["fb", "hp", "hr", "flp", "frp", "flr", "frr", "ml", "mr", "apl", "apr", "rkl", "rkr", "ril", "rir", "roof", "dl", "dr", "ql", "qr", "trunk", "rb"], inc: ["Every painted panel on the car", "Roof, doors, trunk, and pillars", "Front and rear bumpers", "Made for exotic and luxury cars"] }
+  ];
+  DETAIL.forEach(function (p) { $("pk-detail").appendChild(card("detail", p)); });
+  COAT.forEach(function (p) { $("pk-coat").appendChild(card("coat", p)); });
+
+  var zones = document.querySelectorAll(".zone");
+  function showPPF(p) {
+    $("map-title").textContent = p.n + " coverage";
+    zones.forEach(function (z) { z.classList.toggle("on", p.z.indexOf(z.getAttribute("data-z")) >= 0); });
+    document.querySelectorAll("#pk-ppf .pkg").forEach(function (c, i) { c.classList.toggle("sel", PPF[i] === p); });
+  }
+  PPF.forEach(function (p) {
+    var c = card("ppf", p);
+    c.tabIndex = 0;
+    c.setAttribute("aria-label", p.n + ", show coverage on the car map");
+    c.addEventListener("click", function () { showPPF(p); });
+    c.addEventListener("mouseenter", function () { showPPF(p); });
+    c.addEventListener("focus", function () { showPPF(p); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showPPF(p); } });
+    $("pk-ppf").appendChild(c);
+  });
+  showPPF(PPF[0]);
+
+  /* tint */
+  var WHERE = [
+    { id: "front", n: "Front two windows", carbon: 120, ceramic: 180 },
+    { id: "full", n: "Full vehicle", carbon: 300, ceramic: 420 },
+    { id: "wind", n: "Windshield", carbon: 150, ceramic: 250 },
+    { id: "strip", n: "Sun strip", carbon: 60, ceramic: 75 }
+  ];
+  var FILMS = [{ id: "carbon", n: "Carbon" }, { id: "ceramic", n: "Ceramic" }];
+  var SHADES = [5, 20, 35, 50, 70];
+  var T = { where: WHERE[0], film: FILMS[1], shade: 50 };
+  function segs(el, list, key, labelFn) {
+    el.innerHTML = "";
+    list.forEach(function (it) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.id = "t-" + key + "-" + (it.id || it);
+      b.textContent = labelFn(it);
+      b.addEventListener("click", function () { T[key] = it; renderTint(); });
+      el.appendChild(b);
+    });
+  }
+  segs($("t-where"), WHERE, "where", function (x) { return x.n; });
+  segs($("t-film"), FILMS, "film", function (x) { return x.n; });
+  segs($("t-shade"), SHADES, "shade", function (x) { return x + "%"; });
+  function renderTint() {
+    $("t-where").querySelectorAll("button").forEach(function (b, i) { b.setAttribute("aria-pressed", WHERE[i] === T.where ? "true" : "false"); });
+    $("t-film").querySelectorAll("button").forEach(function (b, i) { b.setAttribute("aria-pressed", FILMS[i] === T.film ? "true" : "false"); });
+    $("t-shade").querySelectorAll("button").forEach(function (b, i) { b.setAttribute("aria-pressed", SHADES[i] === T.shade ? "true" : "false"); });
+    $("t-film-layer").style.opacity = ((100 - T.shade) / 100 * 0.92).toFixed(2);
+    $("t-vlt").textContent = T.shade + "% lets in " + T.shade + "% of light";
+    var price = T.where[T.film.id];
+    $("t-price").textContent = money(price);
+    $("t-label").textContent = T.where.n + ", " + T.film.n.toLowerCase() + ", " + T.shade + "%";
+    var law = $("t-law"), ok = true, head = "", body = "";
+    if (T.where.id === "front" || T.where.id === "full") {
+      ok = T.shade >= 50;
+      head = ok ? "Legal on the front side windows" : "Too dark for the front side windows in Ohio";
+      body = ok ? "Ohio requires front side windows to let in at least 50% of light." + (T.where.id === "full" ? " Rear windows can go as dark as you want." : "")
+                : "Ohio requires at least 50% on the front side windows." + (T.where.id === "full" ? " You can keep this shade on the rear windows and go 50% or lighter up front." : "");
+    } else if (T.where.id === "wind") {
+      ok = T.shade >= 70;
+      head = ok ? "Clear enough for a full windshield" : "Only the top 5 inches can be this dark";
+      body = ok ? "A light 70% ceramic film blocks heat while keeping the windshield clear. Call for clear film pricing." : "Ohio limits windshield tint to the top 5 inches, so a full windshield needs a light, clear film.";
+    } else {
+      head = "Legal when kept to the top 5 inches"; body = "The sun strip runs across the top of the windshield to cut glare at sunrise and sunset.";
+    }
+    law.className = "law" + (ok ? "" : " bad");
+    law.querySelector("b").textContent = head;
+    law.querySelector("span").textContent = body + " This is a guide, not legal advice.";
+    var key = "tint:" + T.where.id + ":" + T.film.id + ":" + T.shade, b = $("t-add");
+    b.setAttribute("data-key", key);
+    b.setAttribute("aria-pressed", inEst(key) >= 0 ? "true" : "false");
+    b.textContent = inEst(key) >= 0 ? "Added to estimate" : "Add to estimate";
+  }
+  $("t-add").addEventListener("click", function () {
+    toggle("tint:" + T.where.id + ":" + T.film.id + ":" + T.shade, "Window tint, " + T.where.n.toLowerCase(), T.film.n + " film at " + T.shade + "%", T.where[T.film.id]);
+  });
+  renderTint();
+  renderEst();
 })();
 </script>
 </body>

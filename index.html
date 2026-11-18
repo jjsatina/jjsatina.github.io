@@ -189,6 +189,20 @@ h2 {
 }
 .card:hover { transform: translateY(-3px); border-color: var(--ink); }
 .card[hidden] { display: none; }
+.card { position: relative; }
+.card.fav { border-color: #d9a520; }
+.fav-star {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+  transform: rotate(12deg);
+}
+.fav-star polygon { fill: #f5c22b; stroke: #b07d0c; stroke-width: 1.5; stroke-linejoin: round; }
+.fav-note { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.fav-note svg { width: 16px; height: 16px; }
 .card .row {
   display: flex;
   justify-content: space-between;
@@ -324,7 +338,10 @@ footer {
 
   <section class="wrap" id="work">
     <div class="head">
-      <h2>Work</h2>
+      <div>
+        <h2>Work</h2>
+        <span class="fav-note"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,1.8 14.9,8.6 22.2,9.2 16.6,14 18.3,21.2 12,17.4 5.7,21.2 7.4,14 1.8,9.2 9.1,8.6" fill="#f5c22b" stroke="#b07d0c" stroke-width="1.5"/></svg>My favorite projects</span>
+      </div>
       <div class="filters" role="group" aria-label="Filter projects">
         <button type="button" id="f-all" data-filter="all" aria-pressed="true">All</button>
         <button type="button" id="f-app" data-filter="app" aria-pressed="false">Apps</button>
@@ -354,7 +371,8 @@ footer {
         <a class="open" href="projects/storystop.html">See the page</a>
       </article>
 
-      <article class="card" data-cat="product">
+      <article class="card fav" data-cat="product">
+        <svg class="fav-star" viewBox="0 0 24 24" role="img" aria-label="One of my favorites"><polygon points="12,1.8 14.9,8.6 22.2,9.2 16.6,14 18.3,21.2 12,17.4 5.7,21.2 7.4,14 1.8,9.2 9.1,8.6"/></svg>
         <div class="row"><span>Product</span><span class="stamp">Landing page</span></div>
         <h3>VertiGarden</h3>
         <p>An aeroponic tower garden for growing produce at home in a small space. I built the pitch materials, landing page, and outreach strategy.</p>
@@ -370,7 +388,8 @@ footer {
         <a class="open" href="projects/squall.html">Play it</a>
       </article>
 
-      <article class="card" data-cat="game">
+      <article class="card fav" data-cat="game">
+        <svg class="fav-star" viewBox="0 0 24 24" role="img" aria-label="One of my favorites"><polygon points="12,1.8 14.9,8.6 22.2,9.2 16.6,14 18.3,21.2 12,17.4 5.7,21.2 7.4,14 1.8,9.2 9.1,8.6"/></svg>
         <div class="row"><span>Game</span><span class="stamp">Playable</span></div>
         <h3>HOLLOW</h3>
         <p>A first person horror game built with three.js. You search dark woods for five pages with a flashlight that is running out of battery, and you are not alone out there.</p>
@@ -381,7 +400,7 @@ footer {
       <article class="card" data-cat="web">
         <div class="row"><span>Website</span><span class="stamp">Concept, not live</span></div>
         <h3>Sarah's Vineyard</h3>
-        <p>A redesign concept for the winery where I work. It has an illustrated header, a filterable wine list, and a badge that shows whether the winery is open.</p>
+        <p>A redesign concept for the winery where I work, built on its real menu, wine list, and music lineup. Guests can filter wines and dishes, build an order that totals itself, and see if the winery and pizza oven are open right now.</p>
         <ul class="tags"><li>HTML and CSS</li><li>SVG illustration</li><li>JavaScript</li></ul>
         <a class="open" href="projects/sarahs-vineyard.html">Open the concept</a>
       </article>
@@ -389,7 +408,7 @@ footer {
       <article class="card" data-cat="web">
         <div class="row"><span>Website</span><span class="stamp">Concept, not live</span></div>
         <h3>Specialty Detailing Co.</h3>
-        <p>A redesign concept for a local auto detailer. The page leads with a before and after slider and keeps pricing and booking easy to find.</p>
+        <p>A redesign concept for a local auto detailer, built on its real packages and prices. It has a car map that shows what each film package covers, a tint preview that checks Ohio's tint law, and a running estimate.</p>
         <ul class="tags"><li>HTML and CSS</li><li>JavaScript</li><li>Local business</li></ul>
         <a class="open" href="projects/specialty-detailing.html">Open the concept</a>
       </article>
@@ -402,7 +421,7 @@ footer {
       <div>
         <p>I'm studying Emerging Media and Technology at Kent State and expect to graduate in May 2027. Most of my projects start with a problem I ran into myself, like DealShift, which I built while I was shopping for a car.</p>
         <p>I'm as interested in the business side as I am in building. For StoryStop and VertiGarden, I worked on the pitch, the landing page, and the outreach plan. I also spent a few months in sales at Rotoservice.</p>
-        <p>I've worked as a server at Sarah's Vineyard since 2020, which is where most of my customer experience comes from. Outside of school and work, I follow severe weather, keep bees, and watch the Buffalo Bills.</p>
+        <p>I've worked as a server at Sarah's Vineyard since 2020, which is where most of my customer experience comes from. Outside of school and work, I follow severe weather, enjoy beekeeping, and watch the Buffalo Bills.</p>
       </div>
       <div>
         <h3>What I work with</h3>

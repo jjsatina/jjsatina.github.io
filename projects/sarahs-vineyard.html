@@ -8,102 +8,265 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: dusk on the hill. One evening palette, a drawn vineyard under the moon,
-   and the wine list as the main thing you do on the page. */
+/* Layout idea: dusk on the hill. One evening palette, a sticky section bar,
+   and real menus you can build an order from while you scroll. */
 :root {
   --bg: #1d1320;
-  --surface: #2a1c2e;
+  --bg2: #241826;
+  --surface: #2c1e30;
   --ink: #f4e9da;
-  --muted: #bfa9b2;
-  --line: #45304a;
+  --muted: #c3aeb6;
+  --line: #48324d;
   --amber: #f0a441;
+  --sage: #9fc7a0;
   --display: "Cormorant Garamond", Georgia, serif;
   --body: "Karla", "Segoe UI", Arial, sans-serif;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--body); }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
 .concept { background: var(--amber); color: #1d1320; font: 500 14px var(--body); text-align: center; padding: 7px 14px; }
-.wrap { max-width: 1040px; margin: 0 auto; padding: 0 clamp(18px, 5vw, 48px); }
-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 18px; padding-bottom: 6px; }
-.logo { font: 700 28px var(--display); }
+.wrap { max-width: 1100px; margin: 0 auto; padding-left: clamp(18px, 5vw, 48px); padding-right: clamp(18px, 5vw, 48px); }
+
+/* top + sticky nav */
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 16px; padding-bottom: 8px; }
+.logo { font: 700 30px/1 var(--display); }
+.logo small { display: block; font: 500 12px var(--body); letter-spacing: 0.14em; color: var(--muted); margin-top: 4px; }
 .back { font-size: 14px; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; }
 .back:hover { border-color: var(--ink); }
+nav.bar { position: sticky; top: 0; z-index: 20; background: rgba(29, 19, 32, 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav.bar .wrap { display: flex; gap: 4px; overflow-x: auto; padding-top: 8px; padding-bottom: 8px; scrollbar-width: none; }
+nav.bar a { flex: none; text-decoration: none; font: 500 15px var(--body); color: var(--muted); padding: 6px 12px; border-radius: 999px; }
+nav.bar a:hover { color: var(--ink); background: var(--surface); }
+
+/* hero */
 .hero { position: relative; }
 .scene { display: block; width: 100%; height: auto; }
-.hero .copy { padding-top: 10px; padding-bottom: 30px; }
-h1 { margin: 0; font: 600 clamp(42px, 7vw, 84px)/0.98 var(--display); letter-spacing: -0.01em; max-width: 16ch; text-wrap: balance; }
-.hero p { max-width: 50ch; color: var(--muted); margin: 16px 0 0; }
-.status { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; font-size: 15px; }
-.status i { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
-.status.open i { background: #7fd08a; box-shadow: 0 0 0 4px rgba(127, 208, 138, 0.2); }
-section { padding-top: clamp(28px, 5vw, 56px); padding-bottom: clamp(28px, 5vw, 56px); }
-h2 { margin: 0 0 6px; font: 600 clamp(34px, 5vw, 54px)/1 var(--display); }
-.lede { margin: 0 0 20px; color: var(--muted); max-width: 56ch; }
+.fly { animation: drift 6s ease-in-out infinite alternate; }
+.fly:nth-of-type(2n) { animation-duration: 8s; animation-delay: -2s; }
+.fly:nth-of-type(3n) { animation-duration: 7s; animation-delay: -4s; }
+@keyframes drift { from { transform: translate(0, 0); opacity: 0.2; } to { transform: translate(14px, -10px); opacity: 0.9; } }
+.hero .copy { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: end; padding-top: 6px; padding-bottom: 30px; }
+h1 { margin: 0; font: 600 clamp(38px, 5.6vw, 66px)/1 var(--display); letter-spacing: -0.01em; text-wrap: balance; }
+.hero p.lede { max-width: 50ch; color: var(--muted); margin: 14px 0 0; }
+.now { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.now .row { display: flex; gap: 12px; align-items: flex-start; }
+.dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); margin-top: 8px; }
+.dot.on { background: #7fd08a; box-shadow: 0 0 0 4px rgba(127, 208, 138, 0.2); }
+.now b { display: block; font-weight: 700; }
+.now span { color: var(--muted); font-size: 15px; }
+
+/* sections */
+section { padding-top: clamp(40px, 6vw, 72px); padding-bottom: clamp(20px, 3vw, 32px); }
+.kicker { font: 700 12px var(--body); letter-spacing: 0.16em; color: var(--amber); margin: 0 0 6px; }
+h2 { margin: 0 0 8px; font: 600 clamp(36px, 5.4vw, 58px)/1 var(--display); text-wrap: balance; }
+.intro { margin: 0 0 22px; color: var(--muted); max-width: 62ch; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
 .chips button { font: 500 14px var(--body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 7px 15px; cursor: pointer; }
+.chips button:hover { border-color: var(--ink); }
 .chips button[aria-pressed="true"] { background: var(--amber); color: #1d1320; border-color: var(--amber); }
-.wines { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 14px; }
-.wine { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 8px; border-top: 4px solid var(--sw); }
-.wine h3 { margin: 0; font: 700 27px/1.05 var(--display); }
+.note { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 15px; color: var(--muted); }
+.note b { color: var(--ink); }
+
+/* wines */
+.wines { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: 14px; }
+.wine { position: relative; background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--sw); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.wine.out { opacity: 0.6; }
+.wine h3 { margin: 0; font: 700 28px/1.05 var(--display); }
 .wine .style { font-size: 14px; color: var(--amber); }
 .wine p { margin: 0; font-size: 15px; color: var(--muted); }
-.gauge { margin-top: auto; padding-top: 8px; }
+.tag { display: inline-block; font: 700 11px var(--body); letter-spacing: 0.1em; border-radius: 4px; padding: 2px 7px; margin-right: 6px; }
+.tag.estate { background: rgba(159, 199, 160, 0.16); color: var(--sage); }
+.tag.sold { background: rgba(240, 164, 65, 0.18); color: var(--amber); }
+.gauge { padding-top: 4px; }
 .gauge .track { position: relative; height: 4px; background: var(--line); border-radius: 2px; }
-.gauge .dot { position: absolute; top: -4px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--amber); }
+.gauge .pin { position: absolute; top: -4px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--amber); }
 .gauge .ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
-.price { font: 500 15px var(--body); font-variant-numeric: tabular-nums; }
-.visit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
-.box { border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+.prices { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: auto; padding-top: 6px; }
+.prices button { font: 500 13px/1.3 var(--body); color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; padding: 7px 4px; cursor: pointer; text-align: center; font-variant-numeric: tabular-nums; }
+.prices button b { display: block; font-size: 16px; }
+.prices button:hover:not(:disabled) { border-color: var(--amber); }
+.prices button:disabled { cursor: not-allowed; opacity: 0.5; }
+.prices .na { font-size: 12px; color: var(--muted); display: grid; place-items: center; border: 1px dashed var(--line); border-radius: 8px; }
+
+/* food */
+.menu-sec { margin-top: 30px; }
+.menu-sec:first-of-type { margin-top: 0; }
+.menu-sec h3 { margin: 0; font: 600 34px/1.1 var(--display); }
+.menu-sec .sub { margin: 4px 0 14px; color: var(--muted); font-size: 15px; max-width: 70ch; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 0 36px; }
+.item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.item h4 { margin: 0; font: 700 18px/1.3 var(--body); }
+.item p { margin: 0; grid-column: 1 / -1; font-size: 15px; color: var(--muted); }
+.item .tags { grid-column: 1 / -1; }
+.tag.meatless { background: rgba(159, 199, 160, 0.16); color: var(--sage); }
+.tag.gf { background: rgba(240, 164, 65, 0.16); color: var(--amber); }
+.adds { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.adds button { font: 700 14px var(--body); font-variant-numeric: tabular-nums; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; cursor: pointer; white-space: nowrap; }
+.adds button small { font-weight: 500; color: var(--muted); margin-right: 4px; }
+.adds button:hover { border-color: var(--amber); }
+.pizza-box { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; margin-bottom: 8px; }
+.pizza-box div { background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 15px; color: var(--muted); }
+.pizza-box b { display: block; color: var(--ink); }
+
+/* music */
+.music { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(18px, 4vw, 44px); align-items: start; }
+.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.facts li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.facts b { display: block; }
+.facts span { font-size: 15px; color: var(--muted); }
+.lineup { list-style: none; margin: 0; padding: 0; }
+.lineup li { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 4px 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.lineup .when { font: 600 15px/1.25 var(--body); color: var(--amber); font-variant-numeric: tabular-nums; }
+.lineup .when small { display: block; color: var(--muted); font-weight: 500; }
+.lineup b { font: 700 24px/1.1 var(--display); }
+.lineup span { display: block; color: var(--muted); font-size: 14px; }
+.lineup li.next { border-top: 2px solid var(--amber); }
+.lineup li.next b::after { content: "Up next"; font: 700 11px var(--body); letter-spacing: 0.1em; color: #1d1320; background: var(--amber); border-radius: 4px; padding: 2px 7px; margin-left: 10px; vertical-align: 4px; }
+
+/* spaces */
+.spaces { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.space { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.space h3 { margin: 0 0 2px; font: 700 27px/1.1 var(--display); }
+.space .cap { font-size: 13px; color: var(--amber); font-weight: 700; letter-spacing: 0.06em; }
+.space p { margin: 8px 0 0; font-size: 15px; color: var(--muted); }
+
+/* gallery + story */
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: start; }
+.pillset { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+.pillset li { border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; font-size: 15px; }
+.artists { list-style: none; margin: 0; padding: 0; }
+.artists li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.artists span { color: var(--muted); font-size: 15px; text-align: right; }
+.story p { margin: 0 0 14px; max-width: 60ch; }
+.timeline { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--line); }
+.timeline li { position: relative; padding: 0 0 18px 22px; }
+.timeline li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--amber); }
+.timeline b { font: 700 22px/1.2 var(--display); display: block; }
+.timeline span { color: var(--muted); font-size: 15px; }
+
+/* private events */
+.events-box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: clamp(20px, 4vw, 36px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.events-box h3 { margin: 0 0 6px; font: 700 26px var(--display); }
+.events-box p, .events-box li { font-size: 15px; color: var(--muted); }
+.events-box ul { margin: 0; padding-left: 18px; }
+.events-box p { margin: 0 0 8px; }
+
+/* visit */
+.visit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 14px; }
+.box { border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
 .box h3 { margin: 0 0 8px; font: 700 26px var(--display); }
-.box p { margin: 0 0 6px; color: var(--muted); font-size: 16px; }
+.box p { margin: 0 0 8px; color: var(--muted); font-size: 15px; }
+.box ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+.box li { margin-bottom: 6px; }
 .hours { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
-.hours td { padding: 5px 0; border-top: 1px solid var(--line); color: var(--muted); }
+.hours td { padding: 6px 0; border-top: 1px solid var(--line); color: var(--muted); }
 .hours td:last-child { text-align: right; }
 .hours tr.today td { color: var(--ink); font-weight: 700; }
-.grapes { display: flex; flex-wrap: wrap; gap: 8px; }
-.grapes span { border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; font-size: 15px; }
-footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
+.btnlink { display: inline-block; margin-top: 6px; font: 700 15px var(--body); text-decoration: none; background: var(--amber); color: #1d1320; border-radius: 999px; padding: 9px 18px; }
+
+/* order planner */
+.tab-btn { position: fixed; right: 18px; bottom: 18px; z-index: 30; font: 700 16px var(--body); color: #1d1320; background: var(--amber); border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); font-variant-numeric: tabular-nums; }
+.tab-btn[hidden] { display: none; }
+.tab-panel { position: fixed; right: 18px; bottom: 76px; z-index: 31; width: min(380px, calc(100vw - 36px)); max-height: min(70vh, 560px); display: flex; flex-direction: column; background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5); }
+.tab-panel[hidden] { display: none; }
+.tab-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.tab-head h3 { margin: 0; font: 700 26px var(--display); }
+.tab-head button { font: 500 14px var(--body); color: var(--muted); background: none; border: 0; cursor: pointer; }
+.tab-list { list-style: none; margin: 0; padding: 4px 16px; overflow-y: auto; }
+.tab-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.tab-list li small { display: block; color: var(--muted); }
+.qty { display: flex; align-items: center; gap: 4px; }
+.qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: 700 15px var(--body); }
+.tab-foot { padding: 12px 16px 16px; font-variant-numeric: tabular-nums; }
+.tab-foot .line { display: flex; justify-content: space-between; color: var(--muted); font-size: 15px; }
+.tab-foot .total { color: var(--ink); font-weight: 700; font-size: 19px; margin-top: 4px; }
+.tab-foot p { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+.empty { padding: 18px 0; color: var(--muted); font-size: 15px; }
+.toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 40; background: var(--ink); color: #1d1320; font: 700 14px var(--body); border-radius: 999px; padding: 8px 16px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+
+footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); margin-top: 40px; }
+
+@media (max-width: 820px) {
+  .hero .copy, .music, .two, .events-box { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fly { animation: none; }
+  .toast { transition: none; }
+}
 </style>
 </head>
 <body>
-<div class="concept">Redesign concept by Jonathan Satina. This is not the winery's official website, which is at <a href="https://sarahsvineyardwinery.com">sarahsvineyardwinery.com</a>.</div>
+<div class="concept">Redesign concept by Jonathan Satina. This is not the winery's official website, which is at <a href="https://www.sarahsvineyardwinery.com">sarahsvineyardwinery.com</a>.</div>
 
-<header class="wrap">
-  <span class="logo">Sarah's Vineyard</span>
+<header class="wrap top">
+  <span class="logo">Sarah's Vineyard<small>WINERY AND ART GALLERY</small></span>
   <a class="back" href="../index.html">Back to portfolio</a>
 </header>
 
+<nav class="bar" aria-label="Sections">
+  <div class="wrap">
+    <a href="#wine">Wine</a>
+    <a href="#food">Food</a>
+    <a href="#music">Live music</a>
+    <a href="#spaces">Spaces</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#parties">Private events</a>
+    <a href="#story">Our story</a>
+    <a href="#visit">Visit</a>
+  </div>
+</nav>
+
 <main>
   <div class="hero">
-    <svg class="scene" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Drawing of vineyard rows on a hill at dusk">
+    <svg class="scene" viewBox="0 0 1200 340" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Drawing of vineyard rows on a hill at dusk with a heron flying over">
       <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1320"/><stop offset="0.7" stop-color="#5a2f4a"/><stop offset="1" stop-color="#c9703f"/></linearGradient>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1320"/><stop offset="0.62" stop-color="#5a2f4a"/><stop offset="1" stop-color="#d07a42"/></linearGradient>
+        <radialGradient id="moonglow"><stop offset="0" stop-color="#f4e9da" stop-opacity="0.22"/><stop offset="1" stop-color="#f4e9da" stop-opacity="0"/></radialGradient>
       </defs>
-      <rect width="1200" height="360" fill="url(#sky)"/>
-      <circle cx="930" cy="92" r="60" fill="#f4e9da" opacity="0.08"/>
-      <circle cx="930" cy="92" r="34" fill="#f4e9da"/>
-      <path d="M0 250 Q220 170 470 232 T900 214 T1200 236 V360 H0Z" fill="#3a2440"/>
-      <path d="M0 290 Q300 220 620 276 T1200 262 V360 H0Z" fill="#2a1c2e"/>
-      <g stroke="#1d1320" stroke-width="5" opacity="0.9">
-        <line x1="600" y1="268" x2="60" y2="360"/><line x1="600" y1="268" x2="260" y2="360"/><line x1="600" y1="268" x2="460" y2="360"/>
-        <line x1="600" y1="268" x2="660" y2="360"/><line x1="600" y1="268" x2="860" y2="360"/><line x1="600" y1="268" x2="1060" y2="360"/>
+      <rect width="1200" height="340" fill="url(#sky)"/>
+      <circle cx="940" cy="86" r="110" fill="url(#moonglow)"/>
+      <circle cx="940" cy="86" r="32" fill="#f4e9da"/>
+      <path d="M0 236 Q220 160 470 220 T900 200 T1200 222 V340 H0Z" fill="#3a2440"/>
+      <path d="M760 210 h60 v-26 l-30 -22 l-30 22 Z" fill="#2a1c2e"/>
+      <rect x="784" y="194" width="12" height="16" fill="#f0a441" opacity="0.85"/>
+      <path d="M0 276 Q300 206 620 262 T1200 248 V340 H0Z" fill="#2a1c2e"/>
+      <g stroke="#1d1320" stroke-width="5" opacity="0.92">
+        <line x1="600" y1="256" x2="40" y2="340"/><line x1="600" y1="256" x2="230" y2="340"/><line x1="600" y1="256" x2="420" y2="340"/>
+        <line x1="600" y1="256" x2="610" y2="340"/><line x1="600" y1="256" x2="800" y2="340"/><line x1="600" y1="256" x2="990" y2="340"/><line x1="600" y1="256" x2="1180" y2="340"/>
       </g>
-      <path d="M300 120 q14 -12 28 0 q14 -12 28 0" fill="none" stroke="#f4e9da" stroke-width="3" opacity="0.7"/>
-      <path d="M380 96 q10 -9 20 0 q10 -9 20 0" fill="none" stroke="#f4e9da" stroke-width="2.5" opacity="0.5"/>
+      <g fill="#1d1320" opacity="0.85">
+        <path d="M300 110 q22 -16 46 -2 q10 -4 18 2 l-14 4 q-6 10 -22 8 q-14 6 -28 -12 z"/>
+        <path d="M356 108 l26 -4 l-24 8 z"/>
+      </g>
+      <g fill="#ffd27a">
+        <circle class="fly" cx="180" cy="250" r="2.2"/><circle class="fly" cx="260" cy="230" r="1.8"/><circle class="fly" cx="420" cy="262" r="2"/>
+        <circle class="fly" cx="700" cy="238" r="2.2"/><circle class="fly" cx="860" cy="262" r="1.8"/><circle class="fly" cx="1040" cy="240" r="2"/>
+        <circle class="fly" cx="560" cy="290" r="1.6"/><circle class="fly" cx="980" cy="300" r="1.8"/>
+      </g>
     </svg>
     <div class="wrap copy">
-      <h1>A winery and art gallery in Cuyahoga Valley.</h1>
-      <p>Sarah's Vineyard grows nine grape varieties on the property, across the road from Blossom Music Center.</p>
-      <div class="status" id="status" aria-live="polite"><i></i><span id="status-text">Checking hours</span></div>
+      <div>
+        <h1>Wine, wood fired pizza, and local art inside the national park.</h1>
+        <p class="lede">Sarah's Vineyard grows nine grape varieties on its hill in Cuyahoga Valley National Park, right across from Blossom Music Center. Pour a glass in the tasting room, find a seat on the deck, or warm up by the pavilion fireplace.</p>
+      </div>
+      <div class="now" aria-live="polite">
+        <div class="row"><i class="dot" id="d-open"></i><div><b id="t-open">Checking hours</b><span id="s-open"></span></div></div>
+        <div class="row"><i class="dot" id="d-pizza"></i><div><b id="t-pizza">Pizza oven</b><span id="s-pizza"></span></div></div>
+        <div class="row"><i class="dot" id="d-music"></i><div><b id="t-music">Live music</b><span id="s-music"></span></div></div>
+      </div>
     </div>
   </div>
 
-  <section class="wrap" id="wines">
+  <section class="wrap" id="wine">
+    <p class="kicker">THE CELLAR</p>
     <h2>What's pouring</h2>
-    <p class="lede">The list runs from dry Riesling to sweet Niagara. Use the filters to narrow it down.</p>
+    <p class="intro">Eleven wines from bone dry to sweet, by the glass, the half carafe, the carafe, or the bottle. Tap any price to add it to your table.</p>
     <div class="chips" role="group" aria-label="Filter wines">
       <button type="button" id="w-all" data-f="all" aria-pressed="true">All</button>
       <button type="button" id="w-red" data-f="red" aria-pressed="false">Reds</button>
@@ -113,93 +276,431 @@ footer { padding-bottom: 44px; font-size: 14px; color: var(--muted); }
       <button type="button" id="w-estate" data-f="estate" aria-pressed="false">Estate grown</button>
     </div>
     <div class="wines" id="wine-grid"></div>
+    <div class="note"><span><b>10% off</b> six or more bottles, mixed or matched</span><span><b>$1</b> samples of any wine</span><span>Sangria is served in house only</span></div>
   </section>
 
-  <section class="wrap">
-    <h2>Plan a visit</h2>
-    <p class="lede">Hours and prices are from the winery's site as of mid 2026, so confirm with them before you visit.</p>
+  <section class="wrap" id="food">
+    <p class="kicker">THE KITCHEN</p>
+    <h2>Something to go with it</h2>
+    <p class="intro">Food is made fresh every day, and it comes out as it's ready, so dishes may not all land at once. Tap a price to add it to your table.</p>
+    <div class="chips" role="group" aria-label="Filter food">
+      <button type="button" id="f-all" data-f="all" aria-pressed="true">Everything</button>
+      <button type="button" id="f-meatless" data-f="meatless" aria-pressed="false">No meat</button>
+      <button type="button" id="f-gf" data-f="gf" aria-pressed="false">Gluten free options</button>
+    </div>
+    <div id="menu"></div>
+    <div class="note"><span>Menu and prices are subject to change, and every item depends on availability.</span><span>On busy days and Blossom concert days, the kitchen switches to a shorter Quick Bites menu.</span></div>
+  </section>
+
+  <section class="wrap" id="music">
+    <p class="kicker">SOLO AT SARAH'S</p>
+    <h2>Live music, no cover</h2>
+    <p class="intro">Solo and duo acoustic acts play the tasting room through the colder months, and there's never a cover charge.</p>
+    <div class="music">
+      <ul class="facts">
+        <li><b>Fridays, 6 to 9pm</b><span>Solo at Sarah's runs November through April.</span></li>
+        <li><b>Thursdays, 6 to 8:30pm</b><span>Jake Richardson plays every Thursday.</span></li>
+        <li><b>First Wednesday of the month, 6 to 8:30pm</b><span>A bonus night of music to start each month.</span></li>
+        <li><b>Groups of 8 or more</b><span>Call ahead to reserve indoor seating.</span></li>
+      </ul>
+      <div>
+        <ul class="lineup" id="lineup"></ul>
+        <p class="note" id="lineup-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="spaces">
+    <p class="kicker">FIND A SEAT</p>
+    <h2>Five places to settle in</h2>
+    <p class="intro">You get table service in the tasting room, on the deck, and in the butterfly garden. The pavilion and its picnic tables run on bar service, and the full menu and wine list are available everywhere.</p>
+    <div class="spaces">
+      <div class="space"><h3>Tasting room</h3><span class="cap">THE HEART OF THE WINERY</span><p>The bar, the kitchen, and the main seating, all inside a barn frame that was built before the Civil War. The walls double as the art gallery.</p></div>
+      <div class="space"><h3>The deck</h3><span class="cap">PARTIES UP TO 6</span><p>Looks right out over the grapevines and has a small fire pit for cooler nights.</p></div>
+      <div class="space"><h3>Butterfly garden</h3><span class="cap">AT THE ENTRANCE</span><p>Exotic plants, a koi pond, and a small waterfall, with picnic tables for bigger groups.</p></div>
+      <div class="space"><h3>The pavilion</h3><span class="cap">PARTIES UP TO 12, SEASONAL</span><p>A three story wood burning fireplace built from stones off Cleveland's East 14th Street, under white oak trusses that span more than 36 feet. Browns games play here in the fall, along with Guardians and Cavs games during open hours. Open weekends as weather permits.</p></div>
+      <div class="space"><h3>The Loft</h3><span class="cap">PRIVATE EVENTS, UP TO 40</span><p>The winery's first addition, finished in 2011. It sits on two levels overlooking the tasting room and is booked for private parties.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap two" id="gallery">
+    <div>
+      <p class="kicker">THE GALLERY</p>
+      <h2>Art you can take home</h2>
+      <p class="intro">The tasting room doubles as a gallery for local and national artists. Everything on display is for sale, so browse while your food is being made.</p>
+      <ul class="pillset"><li>Blown glass</li><li>Pottery</li><li>Jewelry</li><li>Purses</li><li>Tiles</li><li>Pen and ink watercolors</li><li>Collages</li><li>Photography</li></ul>
+    </div>
+    <div>
+      <p class="kicker">FEATURED ARTISTS</p>
+      <ul class="artists">
+        <li>Luke Adams<span>Glass</span></li>
+        <li>Bluegill Pottery<span>Pottery</span></li>
+        <li>MudPie Pottery<span>Pottery</span></li>
+        <li>Paul Anthony<span>Stoneware birdfeeders</span></li>
+        <li>Chris Coffey<span>Black and white photography</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap" id="parties">
+    <p class="kicker">PRIVATE EVENTS</p>
+    <h2>Bring the whole group</h2>
+    <p class="intro">Showers, rehearsal dinners, birthdays, holiday parties, and company get togethers. Event planning is for groups of 16 or more, and smaller groups can just call to reserve seating.</p>
+    <div class="events-box">
+      <div>
+        <h3>The Loft</h3>
+        <p>Up to 40 guests, available all year.</p>
+        <ul>
+          <li>Wednesday to Saturday, 12 to 4pm or 5 to 9pm</li>
+          <li>Sunday, 12 to 5pm</li>
+          <li>Up a flight of stairs, so it isn't wheelchair accessible</li>
+        </ul>
+        <h3 style="margin-top:18px">The pavilion</h3>
+        <ul><li>Weekday events only, Wednesday to Friday, 12 to 4pm</li></ul>
+      </div>
+      <div>
+        <h3>Good to know</h3>
+        <ul>
+          <li>Weddings and receptions aren't hosted.</li>
+          <li>Under Ohio law, every drink served has to come from Sarah's Vineyard.</li>
+          <li>Private bookings in the Loft and pavilion can bring their own food, and any party can bring a cake or cupcakes.</li>
+          <li>Ask about the event menu when you book.</li>
+        </ul>
+        <p style="margin-top:14px"><b style="color:var(--ink)">To book, call Sarah Altieri at 330 929 8057</b> during business hours or email sarah@sarahsvineyardwinery.com. Voicemail requests aren't processed.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap two story" id="story">
+    <div>
+      <p class="kicker">OUR STORY</p>
+      <h2>Named for Sarah</h2>
+      <p>Margaret and Mike Lytz opened Sarah's Vineyard in 2007 on fields that had been left to go wild. The vineyard is named for Margaret's daughter, Sarah, and the fields are cared for in her memory.</p>
+      <p>Mike grows the grapes and makes the wine, and Margaret runs the art side of the winery. Staff and volunteers helped bring the place to life, turning a forgotten stretch of the valley back into countryside.</p>
+    </div>
+    <ol class="timeline">
+      <li><b>Before the Civil War</b><span>The hand hewn timber frame that became the winery is raised near what's now Cloverleaf High School in Medina County.</span></li>
+      <li><b>2007</b><span>The frame is taken down, moved into the Cuyahoga Valley, finished in cherry, aspen, poplar, walnut, and maple, and opened as the winery.</span></li>
+      <li><b>2011</b><span>The Loft is finished as the first addition.</span></li>
+      <li><b>Today</b><span>Nine grape varieties grow on the hill: Vidal, Seyval, Frontenac, Cabernet Franc, Chambourcin, Traminette, Cayuga, Niagara, and Rubiana.</span></li>
+    </ol>
+  </section>
+
+  <section class="wrap" id="visit">
+    <p class="kicker">PLAN A VISIT</p>
+    <h2>Come up the hill</h2>
     <div class="visit">
       <div class="box">
         <h3>Hours</h3>
         <table class="hours"><tbody id="hours"></tbody></table>
+        <p style="margin-top:10px">Closed Thanksgiving, Christmas Eve, Christmas Day, New Year's Eve, New Year's Day, and Easter.</p>
       </div>
       <div class="box">
         <h3>Find us</h3>
         <p>1204 W. Steels Corners Rd.<br>Cuyahoga Falls, Ohio 44223</p>
         <p>330 929 8057</p>
+        <a class="btnlink" href="https://www.google.com/maps/place/1204+W+Steels+Corners+Rd,+Cuyahoga+Falls,+OH+44223/">Get directions</a>
       </div>
       <div class="box">
-        <h3>Solo at Sarah's</h3>
-        <p>Live acoustic music on Friday nights from 6 to 9, with wood fired pizza on select days and a rotating gallery of local art on the walls.</p>
+        <h3>Good to know</h3>
+        <ul>
+          <li>No outside food or alcohol anywhere on the property, but cake and cupcakes for a celebration are fine.</li>
+          <li>Kids need to stay seated with a parent and out of the vines.</li>
+          <li>Gift certificates come in any amount, and gift baskets can be put together with a little notice.</li>
+          <li>No bonfires or grilling.</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Blossom concert days</h3>
+        <ul>
+          <li>Seating is first come, first served, so bring a lawn chair if there's a wait.</li>
+          <li>You can order wine while you wait, and food once you're seated.</li>
+          <li>Parking here is for winery guests only, and the gates close at 10pm.</li>
+          <li>Leave plenty of time before the show, since the kitchen runs the Quick Bites menu.</li>
+        </ul>
       </div>
     </div>
   </section>
-
-  <section class="wrap">
-    <h2>Grown on the hill</h2>
-    <p class="lede">Nine varieties are planted on the property.</p>
-    <div class="grapes"><span>Vidal</span><span>Seyval</span><span>Frontenac</span><span>Cabernet Franc</span><span>Chambourcin</span><span>Traminette</span><span>Cayuga</span><span>Niagara</span><span>Rubiana</span></div>
-  </section>
 </main>
 
-<footer class="wrap">Concept only. Design and code by Jonathan Satina. Names, wines, and details belong to Sarah's Vineyard.</footer>
+<footer class="wrap">Concept only. Design and code by Jonathan Satina. Menus, prices, and details come from sarahsvineyardwinery.com as of November 2026 and belong to Sarah's Vineyard.</footer>
+
+<button class="tab-btn" id="tab-btn" type="button" hidden aria-controls="tab-panel" aria-expanded="false">Your table</button>
+<div class="tab-panel" id="tab-panel" hidden role="dialog" aria-label="Your table">
+  <div class="tab-head"><h3>Your table</h3><button type="button" id="tab-clear">Clear all</button></div>
+  <ul class="tab-list" id="tab-list"></ul>
+  <div class="tab-foot" id="tab-foot"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 (function () {
-  var HOURS = [
-    { d: "Sunday", o: 12, c: 19 }, { d: "Monday" }, { d: "Tuesday" },
-    { d: "Wednesday", o: 12, c: 21 }, { d: "Thursday", o: 12, c: 21 },
-    { d: "Friday", o: 12, c: 21 }, { d: "Saturday", o: 12, c: 21 }
-  ];
-  function t(h) { return (h > 12 ? h - 12 : h) + (h >= 12 ? "pm" : "am"); }
-  var now = { day: new Date().getDay(), hour: new Date().getHours() };
-  try {
-    var parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "long", hour: "numeric", hour12: false }).formatToParts(new Date());
-    parts.forEach(function (p) {
-      if (p.type === "weekday") HOURS.forEach(function (h, i) { if (h.d === p.value) now.day = i; });
-      if (p.type === "hour") now.hour = parseInt(p.value, 10) % 24;
-    });
-  } catch (e) {}
-  var today = HOURS[now.day], open = today.o !== undefined && now.hour >= today.o && now.hour < today.c;
-  var st = document.getElementById("status"), txt = document.getElementById("status-text");
-  if (open) { st.className = "status open"; txt.textContent = "Open now until " + t(today.c); }
-  else {
-    var msg = "Closed right now";
-    if (today.o !== undefined && now.hour < today.o) msg = "Closed right now, opens today at " + t(today.o);
-    else for (var k = 1; k <= 7; k++) { var n = HOURS[(now.day + k) % 7]; if (n.o !== undefined) { msg = "Closed right now, opens " + (k === 1 ? "tomorrow" : n.d) + " at " + t(n.o); break; } }
-    txt.textContent = msg;
-  }
-  document.getElementById("hours").innerHTML = [3, 4, 5, 6, 0, 1, 2].map(function (i) {
-    var h = HOURS[i];
-    return '<tr class="' + (i === now.day ? "today" : "") + '"><td>' + h.d + "</td><td>" + (h.o !== undefined ? t(h.o) + " to " + t(h.c) : "Closed") + "</td></tr>";
-  }).join("");
+  var TZ = "America/New_York";
+  function $(id) { return document.getElementById(id); }
+  function money(v) { return "$" + (Math.round(v * 100) / 100).toFixed(v % 1 ? 2 : 0); }
+  function t12(h) { var hh = Math.floor(h), m = Math.round((h - hh) * 60); return (hh > 12 ? hh - 12 : hh) + (m ? ":" + ("0" + m).slice(-2) : "") + (hh >= 12 ? "pm" : "am"); }
 
-  var WINES = [
-    { n: "Blue Heron Blush", s: "Blush, Ohio table wine", cat: ["white", "sweet", "estate"], sw: "#d98a8f", sweet: 62, d: "An estate blend of Vidal, Seyval, Cayuga, Traminette, and Rubiana that comes out semi sweet and refreshing.", g: 8, b: 27 },
-    { n: "Double Trouble", s: "Dry white, Vidal and Traminette", cat: ["white", "dry", "estate"], sw: "#e7d292", sweet: 18, d: "A dry, balanced white named for the vineyard dogs, Stanley and Fronty.", g: 8, b: 27 },
-    { n: "Sarah's Secret", s: "Semi sweet Ohio red", cat: ["red", "sweet", "estate"], sw: "#8e2f3e", sweet: 58, d: "Estate Frontenac and California Zinfandel with black cherry and a little spice.", g: 8, b: 27 },
-    { n: "Painted Lady", s: "Dry Riesling", cat: ["white", "dry"], sw: "#ecd98a", sweet: 24, d: "A crisp, fruity Riesling from grapes grown near Lake Erie and in California.", g: 7, b: 23 },
-    { n: "Hampton Hills", s: "Chardonnay", cat: ["white", "dry"], sw: "#e3cd84", sweet: 20, d: "A mellow, dry Chardonnay with a hint of apple.", g: 7, b: 23 },
-    { n: "Cuyahoga Valley Reserve", s: "Red Zinfandel", cat: ["red", "dry"], sw: "#7a2533", sweet: 30, d: "A rich, oak aged Zinfandel with red cherry up front.", g: 8, b: 27 },
-    { n: "Miserabile", s: "Dry red, Tuscan style blend", cat: ["red", "dry"], sw: "#6e2230", sweet: 22, d: "Merlot, Sangiovese, and Rubiana in a smooth, lightly oaked red.", g: 8, b: 27 },
-    { n: "Irritablé", s: "Dry red, Muscat, Alicante, and Zin", cat: ["red", "dry"], sw: "#7e2535", sweet: 30, d: "A dry and fruity red named after bartender Don Ross.", g: 7, b: 23 },
-    { n: "Golden Solstice", s: "Sweet Ohio white", cat: ["white", "sweet"], sw: "#edc560", sweet: 82, d: "A fragrant sweet white made from Ohio Niagara grapes." }
-  ];
-  var grid = document.getElementById("wine-grid"), chips = document.querySelectorAll(".chips button");
-  function show(f) {
-    grid.innerHTML = WINES.filter(function (w) { return f === "all" || w.cat.indexOf(f) >= 0; }).map(function (w) {
-      return '<article class="wine" style="--sw:' + w.sw + '"><h3>' + w.n + '</h3><span class="style">' + w.s + (w.cat.indexOf("estate") >= 0 ? ", estate grown" : "") + "</span><p>" + w.d + "</p>" +
-        '<div class="gauge"><div class="track"><span class="dot" style="left:' + w.sweet + '%"></span></div><div class="ends"><span>Dry</span><span>Sweet</span></div></div>' +
-        (w.g ? '<span class="price">$' + w.g + " a glass, $" + w.b + " a bottle</span>" : '<span class="price">Ask at the bar for pricing</span>') + "</article>";
-    }).join("");
+  /* ---------- clock in the winery's time zone ---------- */
+  var now = new Date(), wd = now.getDay(), hr = now.getHours() + now.getMinutes() / 60, ymd = now.toISOString().slice(0, 10);
+  try {
+    var parts = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", weekday: "short", hour: "numeric", minute: "numeric", hour12: false })
+      .formatToParts(now).forEach(function (p) { parts[p.type] = p.value; });
+    wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(parts.weekday);
+    hr = (parseInt(parts.hour, 10) % 24) + parseInt(parts.minute, 10) / 60;
+    ymd = parts.year + "-" + parts.month + "-" + parts.day;
+  } catch (e) {}
+
+  var DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  var HOURS = [[12, 19], null, null, [12, 21], [12, 21], [12, 21], [12, 21]];
+  var PIZZA = [[12, 19], null, null, [16, 21], [16, 21], [16, 21], [12, 21]];
+  var CLOSED = { "2026-11-26": "Thanksgiving", "2026-12-24": "Christmas Eve", "2026-12-25": "Christmas", "2026-12-31": "New Year's Eve", "2027-01-01": "New Year's Day", "2027-03-28": "Easter" };
+  function addDays(s, n) { var d = new Date(s + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+
+  function nextOpen() {
+    for (var k = 0; k <= 8; k++) {
+      var d = addDays(ymd, k), w = (wd + k) % 7, h = HOURS[w];
+      if (!h || CLOSED[d]) continue;
+      if (k === 0 && hr >= h[0]) continue;
+      return (k === 0 ? "today" : k === 1 ? "tomorrow" : DAYS[w]) + " at " + t12(h[0]);
+    }
+    return "soon";
   }
-  chips.forEach(function (c) {
-    c.addEventListener("click", function () {
-      chips.forEach(function (x) { x.setAttribute("aria-pressed", x === c ? "true" : "false"); });
-      show(c.getAttribute("data-f"));
-    });
+  (function status() {
+    var h = HOURS[wd], holiday = CLOSED[ymd], open = !holiday && h && hr >= h[0] && hr < h[1];
+    $("d-open").className = "dot" + (open ? " on" : "");
+    if (open) { $("t-open").textContent = "Open now"; $("s-open").textContent = "Pouring until " + t12(h[1]) + " tonight."; }
+    else if (holiday) { $("t-open").textContent = "Closed today for " + holiday; $("s-open").textContent = "Opens " + nextOpen() + "."; }
+    else { $("t-open").textContent = "Closed right now"; $("s-open").textContent = "Opens " + nextOpen() + "."; }
+
+    var p = PIZZA[wd], pOn = open && p && hr >= p[0] && hr < p[1];
+    $("d-pizza").className = "dot" + (pOn ? " on" : "");
+    if (pOn) { $("t-pizza").textContent = "The pizza oven is going"; $("s-pizza").textContent = "Wood fired pizzas until " + t12(p[1]) + "."; }
+    else if (open && p && hr < p[0]) { $("t-pizza").textContent = "Pizza starts at " + t12(p[0]); $("s-pizza").textContent = "The rest of the menu is ready now."; }
+    else { $("t-pizza").textContent = "Wood fired pizza"; $("s-pizza").textContent = "Wednesday to Friday from 4pm, and all day on weekends."; }
+  })();
+
+  var tb = $("hours");
+  [3, 4, 5, 6, 0, 1, 2].forEach(function (i) {
+    var h = HOURS[i], tr = document.createElement("tr");
+    if (i === wd) tr.className = "today";
+    tr.innerHTML = "<td>" + DAYS[i] + "</td><td>" + (h ? t12(h[0]) + " to " + t12(h[1]) : "Closed") + "</td>";
+    tb.appendChild(tr);
   });
-  show("all");
+
+  /* ---------- live music ---------- */
+  var SHOWS = [
+    { d: "2026-11-20", t: "6 to 9pm", n: "Tyler Hawes" },
+    { d: "2026-11-27", t: "6 to 9pm", n: "Kristine Jackson", flag: true },
+    { d: "2026-12-02", t: "6 to 8:30pm", n: "Victor Samalot", tag: "First Wednesday" },
+    { d: "2026-12-04", t: "6 to 9pm", n: "Alex Bevan" },
+    { d: "2026-12-11", t: "6 to 9pm", n: "AJ Neitenbach" },
+    { d: "2026-12-18", t: "6 to 9pm", n: "Austin Walkin' Cane" }
+  ];
+  var up = SHOWS.filter(function (s) { return s.d >= ymd; });
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function label(iso) { var d = new Date(iso + "T12:00:00Z"); return { day: DAYS[d.getUTCDay()].slice(0, 3), date: MON[d.getUTCMonth()] + " " + d.getUTCDate() }; }
+  var ul = $("lineup");
+  if (up.length) {
+    up.forEach(function (s, i) {
+      var l = label(s.d), li = document.createElement("li");
+      if (i === 0) li.className = "next";
+      li.innerHTML = '<span class="when">' + l.date + "<small>" + l.day + "</small></span><div><b>" + s.n + "</b><span>" + s.t + (s.tag ? ", " + s.tag : "") + (s.flag ? ". Date to be confirmed with the winery" : "") + "</span></div>";
+      ul.appendChild(li);
+    });
+    var u = label(up[0].d);
+    $("d-music").className = "dot" + (up[0].d === ymd ? " on" : "");
+    $("t-music").textContent = up[0].d === ymd ? up[0].n + " tonight" : "Next up: " + up[0].n;
+    $("s-music").textContent = (up[0].d === ymd ? "" : u.day + ", " + u.date + ", ") + up[0].t + ". No cover.";
+  } else {
+    ul.innerHTML = '<li><span class="when">2027</span><div><b>New lineup coming soon</b><span>Check back for next year’s dates.</span></div></li>';
+    $("t-music").textContent = "Live music"; $("s-music").textContent = "Thursdays and Fridays. No cover.";
+  }
+  if (wd === 4 && !CLOSED[ymd] && (!up.length || up[0].d !== ymd)) { $("d-music").className = "dot on"; $("t-music").textContent = "Jake Richardson tonight"; $("s-music").textContent = "6 to 8:30pm. No cover."; }
+  $("lineup-note").textContent = "The winery's schedule lists Kristine Jackson on November 26, which is Thanksgiving, when it's closed, so that date is shown here as the Friday after.";
+
+  /* ---------- order planner ---------- */
+  var TAB = [];
+  function add(name, opt, price, bottle) {
+    var key = name + "|" + opt, found = null;
+    TAB.forEach(function (x) { if (x.key === key) found = x; });
+    if (found) found.q++; else TAB.push({ key: key, name: name, opt: opt, price: price, bottle: !!bottle, q: 1 });
+    toast("Added " + name + (opt ? ", " + opt.toLowerCase() : ""));
+    renderTab();
+  }
+  var toastT;
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("show"); }, 1400); }
+  function renderTab() {
+    var count = 0, sub = 0, bottles = 0, bottleSum = 0;
+    TAB.forEach(function (x) { count += x.q; sub += x.q * x.price; if (x.bottle) { bottles += x.q; bottleSum += x.q * x.price; } });
+    var btn = $("tab-btn");
+    btn.hidden = count === 0;
+    btn.textContent = "Your table: " + count + (count === 1 ? " item, " : " items, ") + money(sub);
+    if (!count) { $("tab-panel").hidden = true; btn.setAttribute("aria-expanded", "false"); }
+    var list = $("tab-list");
+    list.innerHTML = "";
+    if (!count) list.innerHTML = '<li class="empty">Nothing yet. Tap a price on any wine or dish.</li>';
+    TAB.forEach(function (x, i) {
+      var li = document.createElement("li");
+      li.innerHTML = "<div>" + x.name + (x.opt ? "<small>" + x.opt + "</small>" : "") + '</div><div class="qty"><button type="button" aria-label="One less ' + x.name + '">−</button><span>' + x.q + '</span><button type="button" aria-label="One more ' + x.name + '">+</button></div><span>' + money(x.q * x.price) + "</span>";
+      var bs = li.querySelectorAll("button");
+      bs[0].addEventListener("click", function () { x.q--; if (x.q <= 0) TAB.splice(i, 1); renderTab(); });
+      bs[1].addEventListener("click", function () { x.q++; renderTab(); });
+      list.appendChild(li);
+    });
+    var disc = bottles >= 6 ? bottleSum * 0.1 : 0;
+    var foot = '<div class="line"><span>Subtotal</span><span>' + money(sub) + "</span></div>";
+    if (disc) foot += '<div class="line"><span>10% off ' + bottles + " bottles</span><span>−" + money(disc) + "</span></div>";
+    else if (bottles) foot += '<div class="line"><span>Add ' + (6 - bottles) + " more bottle" + (6 - bottles === 1 ? "" : "s") + " for 10% off</span><span></span></div>";
+    foot += '<div class="line total"><span>Estimated total</span><span>' + money(sub - disc) + "</span></div><p>Before tax and tip. This is a planning tool on a concept site, so order with your server.</p>";
+    $("tab-foot").innerHTML = foot;
+  }
+  $("tab-btn").addEventListener("click", function () {
+    var p = $("tab-panel"); p.hidden = !p.hidden;
+    $("tab-btn").setAttribute("aria-expanded", p.hidden ? "false" : "true");
+  });
+  $("tab-clear").addEventListener("click", function () { TAB = []; renderTab(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("tab-panel").hidden) { $("tab-panel").hidden = true; $("tab-btn").setAttribute("aria-expanded", "false"); $("tab-btn").focus(); } });
+
+  /* ---------- wines ---------- */
+  var WINES = [
+    { n: "Blue Heron Blush", s: "Blush, Ohio table wine", cat: ["white", "sweet", "estate"], sw: "#d98a8f", sweet: 62, d: "An estate blend of Vidal, Seyval, Cayuga, Traminette, and Rubiana, all grown on the hill. Semi sweet and refreshing.", p: [8, 17.5, 29, 29] },
+    { n: "Double Trouble", s: "Dry white, Vidal and Traminette", cat: ["white", "dry", "estate"], sw: "#e7d292", sweet: 16, d: "Dry, balanced, clean, and bright. Named for the vineyard dogs, Stanley and Fronty.", p: [8, 17.5, 29, 29] },
+    { n: "Painted Lady", s: "Dry Riesling, Ohio white", cat: ["white", "dry"], sw: "#ecd98a", sweet: 24, d: "Fruity, crisp, and fresh, from Riesling grown near Lake Erie and in California.", p: [7, 14, 25, 25] },
+    { n: "Hampton Hills", s: "Chardonnay", cat: ["white", "dry"], sw: "#e3cd84", sweet: 18, d: "Dry and mellow with a hint of apple, from California's Central Valley.", p: [7, 14, 25, 25] },
+    { n: "Golden Solstice", s: "Sweet Ohio white", cat: ["white", "sweet"], sw: "#edc560", sweet: 84, d: "Fragrant and sweet, made from Niagara grapes grown near Lake Erie.", p: [7, 13, 20, 20] },
+    { n: "Sarah's Secret", s: "Semi sweet Ohio red", cat: ["red", "sweet", "estate"], sw: "#8e2f3e", sweet: 58, d: "Estate Frontenac blended with California Zinfandel, with black cherry and a little spice.", p: [8, 17.5, 29, 29] },
+    { n: "Sweet Elisa", s: "Sweet Ohio red, Concord and Niagara", cat: ["red", "sweet"], sw: "#7b2a4a", sweet: 72, d: "Fragrant and refreshing, sweet without going too far.", p: [7, 13, 20, 20] },
+    { n: "Cuyahoga Valley Reserve", s: "Red Zinfandel", cat: ["red", "dry"], sw: "#7a2533", sweet: 28, d: "A rich, oak aged Zinfandel from California's Sierra Foothills with red cherry up front.", p: [8, 17.5, 29, 29] },
+    { n: "Miserabile", s: "Dry red, Tuscan style blend", cat: ["red", "dry"], sw: "#6e2230", sweet: 20, d: "Merlot, Sangiovese, and Rubiana in a smooth, lightly oaked red.", p: [8, 17.5, 29, 29] },
+    { n: "Irritablé", s: "Dry red, Muscat, Alicante, and Zinfandel", cat: ["red", "dry"], sw: "#7e2535", sweet: 30, d: "Dry and fruity, named after bartender Don Ross.", p: [7, 14, 25, 25], out: true },
+    { n: "Sangria", s: "Sweet red sangria", cat: ["red", "sweet"], sw: "#b03a48", sweet: 76, d: "A wine blend poured over ice with fresh fruit. Served in house only.", p: [7, 13, 21, null] }
+  ];
+  var SIZES = ["Glass", "Half carafe", "Carafe", "Bottle"];
+  var grid = $("wine-grid");
+  function showWines(f) {
+    grid.innerHTML = "";
+    WINES.filter(function (w) { return f === "all" || w.cat.indexOf(f) >= 0; }).forEach(function (w) {
+      var a = document.createElement("article");
+      a.className = "wine" + (w.out ? " out" : "");
+      a.style.setProperty("--sw", w.sw);
+      var tags = (w.cat.indexOf("estate") >= 0 ? '<span class="tag estate">ESTATE GROWN</span>' : "") + (w.out ? '<span class="tag sold">SOLD OUT</span>' : "");
+      a.innerHTML = (tags ? "<div>" + tags + "</div>" : "") + "<h3>" + w.n + '</h3><span class="style">' + w.s + "</span><p>" + w.d + "</p>" +
+        '<div class="gauge" aria-label="Sweetness"><div class="track"><span class="pin" style="left:' + w.sweet + '%"></span></div><div class="ends"><span>Dry</span><span>Sweet</span></div></div><div class="prices"></div>';
+      var pr = a.querySelector(".prices");
+      w.p.forEach(function (price, i) {
+        if (price === null) { var na = document.createElement("span"); na.className = "na"; na.textContent = "No bottles"; pr.appendChild(na); return; }
+        var b = document.createElement("button");
+        b.type = "button";
+        b.disabled = !!w.out;
+        b.setAttribute("aria-label", "Add " + SIZES[i].toLowerCase() + " of " + w.n + ", " + money(price));
+        b.innerHTML = "<b>" + money(price) + "</b>" + SIZES[i];
+        b.addEventListener("click", function () { add(w.n, SIZES[i], price, i === 3); });
+        pr.appendChild(b);
+      });
+      grid.appendChild(a);
+    });
+  }
+
+  /* ---------- food ---------- */
+  var M = "meatless", G = "gf";
+  var MENU = [
+    { h: "Starters", items: [
+      { n: "Small Cheese Tray", d: "Grapes, two cheese wedges, and crackers.", o: [["", 13]], t: [M] },
+      { n: "Large Cheese Tray", d: "Grapes, two cheese wedges, a goat cheese torte with roasted red pepper tapenade and pesto, salami, an olive medley, accompaniments, and crackers.", o: [["", 21]] },
+      { n: "Artichoke and Asiago Dip", d: "Served hot with tortilla chips and crackers.", o: [["", 12]], t: [M] },
+      { n: "Tomato Bruschetta", d: "Tomato, red onion, and basil with balsamic glaze on toasted herbed crostini.", o: [["", 12]], t: [M] },
+      { n: "Chips and Dip", d: "Tortilla chips with salsa and queso.", o: [["", 11]], t: [M] },
+      { n: "Warm Rosemary Bread", d: "Warm focaccia with seasoned olive oil, Parmesan, and balsamic glaze for dipping.", o: [["", 12.5]], t: [M] },
+      { n: "Hummus", d: "Served with naan flatbreads.", o: [["", 11.5], ["With veggies", 15]], t: [M] },
+      { n: "Soft Pretzels", d: "Four medium pretzels with warm beer cheese dip and whole grain mustard.", o: [["", 12]], t: [M] },
+      { n: "Vineyard Nachos", d: "Pulled pork or Whitey's Chili with queso, scallions, and sliced jalapeños. Salsa or sour cream is $1 each.", o: [["", 16]] },
+      { n: "Ruthie's Meatballs", d: "Homemade meatballs with French bread and butter.", o: [["One", 7], ["Two", 13]] },
+      { n: "Whitey's Chili", d: "Topped with cheddar and sour cream.", o: [["Cup", 6.5], ["Bowl", 9.5]] },
+      { n: "Chili Mac", d: "Whitey's Chili over white cheddar mac and cheese. Bowl only.", o: [["", 12]] }
+    ] },
+    { h: "Salads", sub: "Every salad comes with bread and butter and your choice of ranch or Italian vinaigrette.", items: [
+      { n: "Italian Salad", d: "Romaine, mozzarella, tomato, radish, and pepperoncini.", o: [["Small", 6.75], ["Large", 11]], t: [M] },
+      { n: "Cobb Salad", d: "Romaine, tomato, blue cheese, bacon, egg, and avocado.", o: [["", 13.5]] },
+      { n: "Greek Salad", d: "Romaine, tomato, cucumber, bell pepper, onion, kalamata olives, and feta.", o: [["", 13.5]], t: [M] }
+    ] },
+    { h: "Sandwiches", sub: "Every sandwich comes with bean salad, pasta salad, or potato chips.", items: [
+      { n: "Warm Roast Beef", d: "Melted provolone and horseradish chive cheese on French bread, with au jus for dipping.", o: [["", 13.5]] },
+      { n: "Pulled Pork", d: "Cheddar and barbecue sauce on a seeded salt and pepper bun.", o: [["", 13]] },
+      { n: "Chicken Salad", d: "Made in house with celery and grapes, on a fresh baked croissant.", o: [["", 11]] },
+      { n: "The Harvest", d: "Balsamic onion jam, feta, roasted red pepper, spinach, and sliced zucchini on a seeded salt and pepper bun.", o: [["", 12]], t: [M] },
+      { n: "The Rachel", d: "The Reuben's sister. Warm turkey on rye with melted Swiss, French dressing, and creamy coleslaw.", o: [["", 13.5]] }
+    ] },
+    { h: "Wood fired pizza", pizza: true, items: [
+      { n: "#1 Plain Cheese", d: "Red sauce, basil, mozzarella, and oregano.", o: [["", 17]], t: [M, G] },
+      { n: "#2 Pepperoni and Banana Pepper", d: "Red sauce, pepperoni, banana peppers, mozzarella, and oregano.", o: [["", 18.5]], t: [G] },
+      { n: "#3 Sausage, Mushroom, and Onion", d: "Red sauce, sausage, mushroom, onion, mozzarella, and oregano.", o: [["", 18.5]], t: [G] },
+      { n: "#4 Margherita", d: "Garlic oil, fresh tomato, scallion, Parmesan, mozzarella, and oregano.", o: [["", 18.5]], t: [M, G] },
+      { n: "#5 Chicken Alfredo", d: "Alfredo sauce, chicken, spinach, onion, Parmesan, mozzarella, and oregano.", o: [["", 18.5]], t: [G] },
+      { n: "The General", d: "Red sauce, onion, basil, jalapeños, sausage, pepperoni, Parmesan, and oregano.", o: [["", 20]], t: [G] }
+    ] },
+    { h: "Sweets", items: [
+      { n: "Molten Chocolate Cake", d: "With French vanilla ice cream.", o: [["", 9]], t: [M] },
+      { n: "Rustic Triple Berry Tart", d: "With French vanilla ice cream.", o: [["", 9]], t: [M] },
+      { n: "Gluten Free Brownie Sundae", d: "A warm brownie with French vanilla ice cream.", o: [["", 8]], t: [M, G] }
+    ] },
+    { h: "Drinks", items: [
+      { n: "Soft drinks and coffee", d: "Pepsi, Diet Pepsi, Sprite, lemon iced tea, or coffee.", o: [["", 2]], t: [M, G] }
+    ] }
+  ];
+  var menuEl = $("menu");
+  function showMenu(f) {
+    menuEl.innerHTML = "";
+    MENU.forEach(function (sec) {
+      var items = sec.items.filter(function (it) { return f === "all" || (it.t || []).indexOf(f) >= 0; });
+      if (!items.length) return;
+      var wrap = document.createElement("div");
+      wrap.className = "menu-sec";
+      var html = "<h3>" + sec.h + "</h3>";
+      if (sec.sub) html += '<p class="sub">' + sec.sub + "</p>";
+      if (sec.pizza) {
+        html += '<p class="sub">Fourteen inch thin crust pizzas from the wood fired oven. Ask about the Pizza of the Month.' + (f === "gf" ? " Gluten free pizzas use a 10 inch crust, available on request." : "") + "</p>" +
+          '<div class="pizza-box"><div><b>When it’s on</b>Wednesday to Friday, 4 to 9pm<br>Saturday, 12 to 9pm<br>Sunday, 12 to 7pm</div>' +
+          "<div><b>Make it yours</b>Extra meat or cheese, $1.50 each<br>Extra veggies, $1 each<br>Vegan cheese, $1.50<br>Balsamic glaze, $1</div>" +
+          "<div><b>Gluten free</b>A 10 inch gluten free crust is available for any pizza on request.</div></div>";
+      }
+      html += '<div class="items"></div>';
+      wrap.innerHTML = html;
+      var box = wrap.querySelector(".items");
+      items.forEach(function (it) {
+        var row = document.createElement("div");
+        row.className = "item";
+        var tags = (it.t || []).map(function (t) { return t === M ? '<span class="tag meatless">NO MEAT</span>' : sec.pizza ? '<span class="tag gf">GF CRUST</span>' : '<span class="tag gf">GLUTEN FREE</span>'; }).join("");
+        row.innerHTML = "<h4>" + it.n + '</h4><div class="adds"></div><p>' + it.d + "</p>" + (tags ? '<div class="tags">' + tags + "</div>" : "");
+        var adds = row.querySelector(".adds");
+        it.o.forEach(function (o) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.setAttribute("aria-label", "Add " + it.n + (o[0] ? ", " + o[0].toLowerCase() : "") + ", " + money(o[1]));
+          b.innerHTML = (o[0] ? "<small>" + o[0] + "</small>" : "") + money(o[1]);
+          b.addEventListener("click", function () { add(it.n, o[0], o[1], false); });
+          adds.appendChild(b);
+        });
+        box.appendChild(row);
+      });
+      menuEl.appendChild(wrap);
+    });
+  }
+
+  function chips(groupSel, fn) {
+    var bs = document.querySelectorAll(groupSel + " button");
+    bs.forEach(function (b) {
+      b.addEventListener("click", function () {
+        bs.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        fn(b.getAttribute("data-f"));
+      });
+    });
+  }
+  chips('#wine .chips', showWines);
+  chips('#food .chips', showMenu);
+  showWines("all");
+  showMenu("all");
+  renderTab();
 })();
 </script>
 </body>
