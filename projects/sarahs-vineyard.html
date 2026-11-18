@@ -590,18 +590,18 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
   /* ---------- food ---------- */
   var M = "meatless", G = "gf";
   var MENU = [
-    { h: "Starters", items: [
-      { n: "Small Cheese Tray", d: "Grapes, two cheese wedges, and crackers.", o: [["", 13]], t: [M] },
-      { n: "Large Cheese Tray", d: "Grapes, two cheese wedges, a goat cheese torte with roasted red pepper tapenade and pesto, salami, an olive medley, accompaniments, and crackers.", o: [["", 21]] },
-      { n: "Artichoke and Asiago Dip", d: "Served hot with tortilla chips and crackers.", o: [["", 12]], t: [M] },
-      { n: "Tomato Bruschetta", d: "Tomato, red onion, and basil with balsamic glaze on toasted herbed crostini.", o: [["", 12]], t: [M] },
-      { n: "Chips and Dip", d: "Tortilla chips with salsa and queso.", o: [["", 11]], t: [M] },
+    { h: "Starters", gfl: "CAN BE GF", sub: "Any starter can be made gluten free except the meatballs, rosemary bread, soft pretzels, and chili mac.", items: [
+      { n: "Small Cheese Tray", d: "Grapes, two cheese wedges, and crackers.", o: [["", 13]], t: [M, G] },
+      { n: "Large Cheese Tray", d: "Grapes, two cheese wedges, a goat cheese torte with roasted red pepper tapenade and pesto, salami, an olive medley, accompaniments, and crackers.", o: [["", 21]], t: [G] },
+      { n: "Artichoke and Asiago Dip", d: "Served hot with tortilla chips and crackers.", o: [["", 12]], t: [M, G] },
+      { n: "Tomato Bruschetta", d: "Tomato, red onion, and basil with balsamic glaze on toasted herbed crostini.", o: [["", 12]], t: [M, G] },
+      { n: "Chips and Dip", d: "Tortilla chips with salsa and queso.", o: [["", 11]], t: [M, G] },
       { n: "Warm Rosemary Bread", d: "Warm focaccia with seasoned olive oil, Parmesan, and balsamic glaze for dipping.", o: [["", 12.5]], t: [M] },
-      { n: "Hummus", d: "Served with naan flatbreads.", o: [["", 11.5], ["With veggies", 15]], t: [M] },
+      { n: "Hummus", d: "Served with naan flatbreads.", o: [["", 11.5], ["With veggies", 15]], t: [M, G] },
       { n: "Soft Pretzels", d: "Four medium pretzels with warm beer cheese dip and whole grain mustard.", o: [["", 12]], t: [M] },
-      { n: "Vineyard Nachos", d: "Pulled pork or Whitey's Chili with queso, scallions, and sliced jalapeños. Salsa or sour cream is $1 each.", o: [["", 16]] },
+      { n: "Vineyard Nachos", d: "Pulled pork or Whitey's Chili with queso, scallions, and sliced jalapeños. Salsa or sour cream is $1 each.", o: [["", 16]], t: [G] },
       { n: "Ruthie's Meatballs", d: "Homemade meatballs with French bread and butter.", o: [["One", 7], ["Two", 13]] },
-      { n: "Whitey's Chili", d: "Topped with cheddar and sour cream.", o: [["Cup", 6.5], ["Bowl", 9.5]] },
+      { n: "Whitey's Chili", d: "Topped with cheddar and sour cream.", o: [["Cup", 6.5], ["Bowl", 9.5]], t: [G] },
       { n: "Chili Mac", d: "Whitey's Chili over white cheddar mac and cheese. Bowl only.", o: [["", 12]] }
     ] },
     { h: "Salads", sub: "Every salad comes with bread and butter and your choice of ranch or Italian vinaigrette.", items: [
@@ -609,12 +609,12 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
       { n: "Cobb Salad", d: "Romaine, tomato, blue cheese, bacon, egg, and avocado.", o: [["", 13.5]] },
       { n: "Greek Salad", d: "Romaine, tomato, cucumber, bell pepper, onion, kalamata olives, and feta.", o: [["", 13.5]], t: [M] }
     ] },
-    { h: "Sandwiches", sub: "Every sandwich comes with bean salad, pasta salad, or potato chips.", items: [
-      { n: "Warm Roast Beef", d: "Melted provolone and horseradish chive cheese on French bread, with au jus for dipping.", o: [["", 13.5]] },
-      { n: "Pulled Pork", d: "Cheddar and barbecue sauce on a seeded salt and pepper bun.", o: [["", 13]] },
-      { n: "Chicken Salad", d: "Made in house with celery and grapes, on a fresh baked croissant.", o: [["", 11]] },
-      { n: "The Harvest", d: "Balsamic onion jam, feta, roasted red pepper, spinach, and sliced zucchini on a seeded salt and pepper bun.", o: [["", 12]], t: [M] },
-      { n: "The Rachel", d: "The Reuben's sister. Warm turkey on rye with melted Swiss, French dressing, and creamy coleslaw.", o: [["", 13.5]] }
+    { h: "Sandwiches", gfl: "CAN BE GF", sub: "Every sandwich comes with bean salad, pasta salad, or potato chips, and any of them can be made gluten free.", items: [
+      { n: "Warm Roast Beef", d: "Melted provolone and horseradish chive cheese on French bread, with au jus for dipping.", o: [["", 13.5]], t: [G] },
+      { n: "Pulled Pork", d: "Cheddar and barbecue sauce on a seeded salt and pepper bun.", o: [["", 13]], t: [G] },
+      { n: "Chicken Salad", d: "Made in house with celery and grapes, on a fresh baked croissant.", o: [["", 11]], t: [G] },
+      { n: "The Harvest", d: "Balsamic onion jam, feta, roasted red pepper, spinach, and sliced zucchini on a seeded salt and pepper bun.", o: [["", 12]], t: [M, G] },
+      { n: "The Rachel", d: "The Reuben's sister. Warm turkey on rye with melted Swiss, French dressing, and creamy coleslaw.", o: [["", 13.5]], t: [G] }
     ] },
     { h: "Wood fired pizza", pizza: true, items: [
       { n: "#1 Plain Cheese", d: "Red sauce, basil, mozzarella, and oregano.", o: [["", 17]], t: [M, G] },
@@ -655,7 +655,7 @@ footer { padding-top: 30px; padding-bottom: 90px; font-size: 14px; color: var(--
       items.forEach(function (it) {
         var row = document.createElement("div");
         row.className = "item";
-        var tags = (it.t || []).map(function (t) { return t === M ? '<span class="tag meatless">NO MEAT</span>' : sec.pizza ? '<span class="tag gf">GF CRUST</span>' : '<span class="tag gf">GLUTEN FREE</span>'; }).join("");
+        var tags = (it.t || []).map(function (t) { return t === M ? '<span class="tag meatless">NO MEAT</span>' : sec.pizza ? '<span class="tag gf">GF CRUST</span>' : '<span class="tag gf">' + (sec.gfl || "GLUTEN FREE") + "</span>"; }).join("");
         row.innerHTML = "<h4>" + it.n + '</h4><div class="adds"></div><p>' + it.d + "</p>" + (tags ? '<div class="tags">' + tags + "</div>" : "");
         var adds = row.querySelector(".adds");
         it.o.forEach(function (o) {
